@@ -1,3 +1,4 @@
+// src/components/RegistroTienda.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Store, ArrowLeft, Upload, Check, X } from "lucide-react";
@@ -29,7 +30,9 @@ const RegistroTienda = () => {
 
   const cargarCategorias = async () => {
     try {
-      const response = await axios.get("/api/categorias");
+      const response = await axios.get(
+        "https://tiendasappbackend.onrender.com/api/categorias"
+      );
       setCategorias(response.data);
     } catch (error) {
       console.error("Error cargando categorías:", error);
@@ -45,14 +48,13 @@ const RegistroTienda = () => {
   };
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files).slice(0, 3); // Máximo 3 archivos
+    const files = Array.from(e.target.files).slice(0, 3);
     setArchivos(files);
 
-    // Generar previews
     const previews = files.map((file) => {
       return new Promise((resolve) => {
         const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
+        reader.onload = (ev) => resolve(ev.target.result);
         reader.readAsDataURL(file);
       });
     });
@@ -80,28 +82,23 @@ const RegistroTienda = () => {
       mostrarMensaje("El nombre del establecimiento es obligatorio", "error");
       return false;
     }
-
     if (!direccion.trim()) {
       mostrarMensaje("La dirección es obligatoria", "error");
       return false;
     }
-
     if (!categoria) {
       mostrarMensaje("Debe seleccionar una categoría", "error");
       return false;
     }
-
     if (!telefonoWhatsapp.trim()) {
       mostrarMensaje("El teléfono de WhatsApp es obligatorio", "error");
       return false;
     }
-
     if (!descripcionVentas.trim()) {
       mostrarMensaje("La descripción de ventas es obligatoria", "error");
       return false;
     }
 
-    // Validar formato de teléfono (solo números)
     const telefonoLimpio = telefonoWhatsapp.replace(/\D/g, "");
     if (telefonoLimpio.length < 10) {
       mostrarMensaje("El teléfono debe tener al menos 10 dígitos", "error");
@@ -122,33 +119,25 @@ const RegistroTienda = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validarFormulario()) return;
 
     setLoading(true);
-
     try {
       const formDataToSend = new FormData();
-
-      // Agregar datos del formulario
       Object.keys(formData).forEach((key) => {
         formDataToSend.append(key, formData[key]);
       });
-
-      // Agregar archivos
-      archivos.forEach((archivo, index) => {
+      archivos.forEach((archivo) => {
         formDataToSend.append("fotos", archivo);
       });
 
-      const response = await axios.post("/api/tiendas", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        "https://tiendasappbackend.onrender.com/api/tiendas",
+        formDataToSend,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
 
       mostrarMensaje("¡Tienda registrada exitosamente!", "success");
-
-      // Limpiar formulario
       setFormData({
         nombreEstablecimiento: "",
         direccion: "",
@@ -161,7 +150,6 @@ const RegistroTienda = () => {
       setArchivos([]);
       setPreviewImages([]);
 
-      // Redirigir después de 2 segundos
       setTimeout(() => {
         navigate("/");
       }, 2000);
@@ -179,7 +167,6 @@ const RegistroTienda = () => {
   return (
     <div className="registro-tienda">
       <div className="registro-container">
-        {/* Header */}
         <div className="registro-header">
           <Link to="/" className="back-button">
             <ArrowLeft size={20} />
@@ -192,7 +179,6 @@ const RegistroTienda = () => {
           <p>Completa la información para agregar tu negocio al directorio</p>
         </div>
 
-        {/* Mensaje de estado */}
         {mensaje && (
           <div className={`mensaje ${tipoMensaje}`}>
             {tipoMensaje === "success" ? <Check size={20} /> : <X size={20} />}
@@ -200,7 +186,6 @@ const RegistroTienda = () => {
           </div>
         )}
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit} className="registro-form">
           <div className="form-row">
             <div className="form-group">
@@ -310,7 +295,6 @@ const RegistroTienda = () => {
             </div>
           </div>
 
-          {/* Subida de imágenes */}
           <div className="form-group">
             <label>Fotos de tus productos (máximo 3)</label>
             <div className="upload-area">
@@ -329,7 +313,6 @@ const RegistroTienda = () => {
               </label>
             </div>
 
-            {/* Preview de imágenes */}
             {previewImages.length > 0 && (
               <div className="image-previews">
                 {previewImages.map((preview, index) => (
