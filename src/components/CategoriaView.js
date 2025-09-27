@@ -16,12 +16,21 @@ const CategoriaView = () => {
   const cargarTiendas = async () => {
     try {
       setLoading(true);
+      // 🔹 URL absoluta de su backend en Render
       const response = await axios.get(
-        `/api/tiendas/categoria/${encodeURIComponent(categoria)}`
+        `https://tiendasappbackend.onrender.com/api/tiendas/categoria/${encodeURIComponent(
+          categoria
+        )}`
       );
-      setTiendas(response.data);
-    } catch (error) {
-      console.error("Error cargando tiendas:", error);
+
+      if (Array.isArray(response.data)) {
+        setTiendas(response.data);
+      } else {
+        console.error("Respuesta inesperada:", response.data);
+        setError("La respuesta del servidor no es válida.");
+      }
+    } catch (err) {
+      console.error("Error cargando tiendas:", err);
       setError("Error cargando las tiendas. Intenta nuevamente.");
     } finally {
       setLoading(false);
@@ -52,10 +61,8 @@ const CategoriaView = () => {
     return iconos[categoria] || "🏪";
   };
 
-  const truncarTexto = (texto, limite = 100) => {
-    if (texto.length <= limite) return texto;
-    return texto.substring(0, limite) + "...";
-  };
+  const truncarTexto = (texto, limite = 100) =>
+    texto.length <= limite ? texto : texto.substring(0, limite) + "...";
 
   if (loading) {
     return (
@@ -96,7 +103,6 @@ const CategoriaView = () => {
 
   return (
     <div className="categoria-view">
-      {/* Header de la categoría */}
       <div className="categoria-header">
         <div className="categoria-header-content">
           <Link to="/" className="back-button">
@@ -109,14 +115,11 @@ const CategoriaView = () => {
           </div>
           <p className="categoria-subtitle">
             {tiendas.length}{" "}
-            {tiendas.length === 1
-              ? "negocio encontrado"
-              : "negocios encontrados"}
+            {tiendas.length === 1 ? "negocio encontrado" : "negocios encontrados"}
           </p>
         </div>
       </div>
 
-      {/* Lista de tiendas */}
       <div className="container">
         {tiendas.length === 0 ? (
           <div className="empty-state">
@@ -138,7 +141,7 @@ const CategoriaView = () => {
                       alt={tienda.nombreEstablecimiento}
                       onError={(e) => {
                         e.target.style.display = "none";
-                        e.target.parentElement.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 3rem;">${iconoCategoria(
+                        e.target.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:3rem;">${iconoCategoria(
                           categoria
                         )}</div>`;
                       }}
@@ -179,7 +182,6 @@ const CategoriaView = () => {
         )}
       </div>
 
-      {/* Call to action para registrar más negocios */}
       {tiendas.length > 0 && (
         <div
           style={{
