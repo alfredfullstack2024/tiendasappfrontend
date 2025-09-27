@@ -13,11 +13,10 @@ const MenuPrincipal = () => {
 
   const cargarCategorias = async () => {
     try {
-      // Usar la URL completa del backend en producción
-      const apiUrl = process.env.REACT_APP_API_URL || '';
+      // URL de su backend en Render
+      const apiUrl = 'https://tiendasappbackend.onrender.com';
       const response = await axios.get(`${apiUrl}/api/categorias`);
-      
-      // Verificar que response.data sea un array
+
       if (Array.isArray(response.data)) {
         setCategorias(response.data);
         console.log('Categorías cargadas:', response.data);
@@ -27,7 +26,7 @@ const MenuPrincipal = () => {
       }
     } catch (error) {
       console.error('Error cargando categorías:', error);
-      // Si hay error, usar categorías por defecto
+      // Categorías por defecto si el backend falla
       setCategorias([
         'Comidas y Restaurantes',
         'Tecnología y Desarrollo',
@@ -88,18 +87,16 @@ const MenuPrincipal = () => {
 
   return (
     <div className="menu-principal">
-      {/* Header */}
       <header className="header">
         <div className="header-content">
           <div className="logo">
             <Store size={32} />
             <h1>TiendasApp</h1>
           </div>
-          {/* Logo de tu negocio */}
           <div className="logo-negocio">
-            <img 
-              src="https://raw.githubusercontent.com/alfredfullstack2024/alfredfullstack.com/main/images/logo%20fin%2017-05-2016.png" 
-              alt="Alfred FullStack Logo" 
+            <img
+              src="https://raw.githubusercontent.com/alfredfullstack2024/alfredfullstack.com/main/images/logo%20fin%2017-05-2016.png"
+              alt="Alfred FullStack Logo"
               className="logo-imagen"
               onError={(e) => {
                 console.error('Error cargando logo:', e);
@@ -111,12 +108,10 @@ const MenuPrincipal = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
           <h2>Encuentra los mejores negocios locales</h2>
           <p>Descubre tiendas, restaurantes y servicios cerca de ti</p>
-          
           <div className="hero-actions">
             <Link to="/registro" className="btn-registro">
               <Plus size={20} />
@@ -126,18 +121,16 @@ const MenuPrincipal = () => {
         </div>
       </section>
 
-      {/* Categorías */}
       <section className="categorias-section">
         <div className="container">
           <h2 className="section-title">
             <Search size={24} />
             Explora por categorías
           </h2>
-          
           <div className="categorias-grid">
             {Array.isArray(categorias) && categorias.length > 0 ? (
               categorias.map((categoria, index) => (
-                <Link 
+                <Link
                   key={index}
                   to={`/categoria/${encodeURIComponent(categoria)}`}
                   className="categoria-card"
@@ -159,7 +152,6 @@ const MenuPrincipal = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-section">
@@ -169,14 +161,12 @@ const MenuPrincipal = () => {
             </div>
             <p>Conectando negocios locales con su comunidad</p>
           </div>
-          
           <div className="footer-section">
             <h4>Para Negocios</h4>
             <ul>
               <li><Link to="/registro">Registrar mi negocio</Link></li>
             </ul>
           </div>
-          
           <div className="footer-section">
             <h4>Ayuda</h4>
             <ul>
@@ -184,7 +174,6 @@ const MenuPrincipal = () => {
             </ul>
           </div>
         </div>
-        
         <div className="footer-bottom">
           <p>&copy; 2024 TiendasApp. Todos los derechos reservados.</p>
         </div>
