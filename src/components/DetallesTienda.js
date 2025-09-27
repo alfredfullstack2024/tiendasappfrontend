@@ -26,10 +26,18 @@ const DetallesTienda = () => {
   const cargarTienda = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/tiendas/${id}`);
-      setTienda(response.data);
-    } catch (error) {
-      console.error("Error cargando tienda:", error);
+      // 🔹 URL absoluta del backend
+      const response = await axios.get(
+        `https://tiendasappbackend.onrender.com/api/tiendas/${id}`
+      );
+
+      if (response.data && response.data._id) {
+        setTienda(response.data);
+      } else {
+        setError("Tienda no encontrada");
+      }
+    } catch (err) {
+      console.error("Error cargando tienda:", err);
       setError("Tienda no encontrada");
     } finally {
       setLoading(false);
@@ -63,16 +71,18 @@ const DetallesTienda = () => {
   const abrirWhatsApp = () => {
     const telefono = tienda.telefonoWhatsapp.replace(/\D/g, "");
     const mensaje = `Hola! Estás siendo contactado por TIENDASAPP. Me interesa conocer más sobre ${tienda.nombreEstablecimiento}.`;
-    const url = `https://wa.me/57${telefono}?text=${encodeURIComponent(
-      mensaje
-    )}`;
-    window.open(url, "_blank");
+    window.open(
+      `https://wa.me/57${telefono}?text=${encodeURIComponent(mensaje)}`,
+      "_blank"
+    );
   };
 
   const abrirMaps = () => {
     const direccion = encodeURIComponent(tienda.direccion);
-    const url = `https://www.google.com/maps/search/?api=1&query=${direccion}`;
-    window.open(url, "_blank");
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${direccion}`,
+      "_blank"
+    );
   };
 
   const abrirPaginaWeb = () => {
@@ -90,16 +100,11 @@ const DetallesTienda = () => {
 
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: titulo,
-          text: texto,
-          url: url,
-        });
+        await navigator.share({ title: titulo, text: texto, url });
       } catch (err) {
         console.log("Error compartiendo:", err);
       }
     } else {
-      // Fallback: copiar URL al portapapeles
       try {
         await navigator.clipboard.writeText(url);
         alert("Enlace copiado al portapapeles");
@@ -143,16 +148,9 @@ const DetallesTienda = () => {
 
   return (
     <div className="detalle-tienda">
-      {/* Header */}
       <div className="detalle-header">
         <div className="container">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Link
               to={`/categoria/${encodeURIComponent(tienda.categoria)}`}
               className="back-button"
@@ -168,10 +166,8 @@ const DetallesTienda = () => {
         </div>
       </div>
 
-      {/* Contenido principal */}
       <div className="detalle-content">
         <div className="detalle-card">
-          {/* Galería de imágenes */}
           <div className="detalle-imagenes">
             {tienda.fotos && tienda.fotos.length > 0 ? (
               <>
@@ -180,7 +176,7 @@ const DetallesTienda = () => {
                   alt={tienda.nombreEstablecimiento}
                   onError={(e) => {
                     e.target.style.display = "none";
-                    e.target.parentElement.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 4rem; background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);">${iconoCategoria(
+                    e.target.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:4rem;background:linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 100%);">${iconoCategoria(
                       tienda.categoria
                     )}</div>`;
                   }}
@@ -191,9 +187,7 @@ const DetallesTienda = () => {
                       <button
                         key={index}
                         onClick={() => setImagenActiva(index)}
-                        className={`thumbnail ${
-                          index === imagenActiva ? "active" : ""
-                        }`}
+                        className={`thumbnail ${index === imagenActiva ? "active" : ""}`}
                       >
                         <img
                           src={foto.url}
@@ -211,19 +205,13 @@ const DetallesTienda = () => {
             )}
           </div>
 
-          {/* Información de la tienda */}
           <div className="detalle-info">
             <h1 className="detalle-titulo">{tienda.nombreEstablecimiento}</h1>
             <p className="detalle-categoria">{tienda.categoria}</p>
-
             <p className="detalle-descripcion">{tienda.descripcionVentas}</p>
 
-            {/* Acciones principales */}
             <div className="detalle-acciones">
-              <button
-                onClick={abrirWhatsApp}
-                className="accion-btn whatsapp-btn"
-              >
+              <button onClick={abrirWhatsApp} className="accion-btn whatsapp-btn">
                 <MessageCircle size={20} />
                 Contactar por WhatsApp
               </button>
@@ -241,7 +229,6 @@ const DetallesTienda = () => {
               )}
             </div>
 
-            {/* Información adicional */}
             <div className="detalle-info-adicional">
               <div className="info-item">
                 <MapPin size={20} />
@@ -278,10 +265,7 @@ const DetallesTienda = () => {
                       style={{ color: "#3b82f6", textDecoration: "none" }}
                     >
                       {tienda.paginaWeb}
-                      <ExternalLink
-                        size={14}
-                        style={{ marginLeft: "0.25rem", display: "inline" }}
-                      />
+                      <ExternalLink size={14} style={{ marginLeft: "0.25rem", display: "inline" }} />
                     </a>
                   </div>
                 </div>
@@ -315,7 +299,6 @@ const DetallesTienda = () => {
         </div>
       </div>
 
-      {/* Call to action */}
       <div
         style={{
           background: "#f8fafc",
