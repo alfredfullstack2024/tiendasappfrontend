@@ -1,153 +1,378 @@
-// src/components/DetallesTienda.js
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+// src/components/RegistroTienda.js
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Store,
+  ArrowLeft,
+  Upload,
+  Check,
+  X,
+  MapPin,
+  Phone,
+  MessageCircle,
+  Star,
+} from "lucide-react";
 import axios from "axios";
-import { MapPin, Phone, Globe, Clock, Star } from "lucide-react";
 
-const DetallesTienda = () => {
-  const { id } = useParams();
-  const [tienda, setTienda] = useState(null);
-  const [resenas, setResenas] = useState([]);
-  const [calificacion, setCalificacion] = useState(0);
-  const [comentario, setComentario] = useState("");
+const RegistroTienda = () => {
+  const navigate = useNavigate();
+  const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [imagen, setImagen] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [mensaje, setMensaje] = useState(null);
+  const [error, setError] = useState(null);
 
-  const API_BASE = "https://tiendasappbackend.onrender.com/api/tiendas";
+  // Campos del formulario
+  const [formData, setFormData] = useState({
+    nombre: "",
+    descripcion: "",
+    categoria: "",
+    telefono: "",
+    direccion: "",
+    ubicacion: { lat: null, lng: null },
+    calificacion: 0,
+  });
 
-  // Cargar tienda y reseñas
+  // Obtener categorías al cargar
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCategorias = async () => {
       try {
-        const tiendaResp = await axios.get(`${API_BASE}/${id}`);
-        setTienda(tiendaResp.data);
-
-        const resenasResp = await axios.get(`${API_BASE}/${id}/resenas`);
-        setResenas(resenasResp.data);
-      } catch (error) {
-        console.error("Error cargando datos:", error);
+        const response = await axios.get("http://localhost:5000/api/categorias");
+        setCategorias(response.data);
+      } catch (err) {
+        console.error("Error cargando categorías:", err);
       }
     };
-    fetchData();
-  }, [id]);
+    fetchCategorias();
+  }, []);
 
-  // Enviar reseña
-  const enviarResena = async (e) => {
-    e.preventDefault();
-    if (!calificacion || !comentario.trim()) {
-      alert("Por favor ingrese una calificación y un comentario.");
-      return;
+  // Manejo de cambio en inputs
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // Manejo de imagen
+  const handleImagen = (e) => {
+    const file = e.target.files[0];
+    setImagen(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
+  // Obtener ubicación GPS
+  const obtenerUbicacion = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          setFormData({
+            ...formData,
+            ubicacion: { lat, lng },
+          });
+        },
+        (err) => {
+          console.error("Error obteniendo ubicación:", err);
+          setError("No se pudo obtener la ubicación.");
+        }
+      );
+    } else {
+      setError("El navegador no soporta geolocalización.");
     }
-    setLoading(true);
-    try {
-      const nuevaResena = { calificacion, comentario };
-      await axios.post(`${API_BASE}/${id}/resenas`, nuevaResena);
+  };
 
-      setResenas([...resenas, nuevaResena]);
-      setCalificacion(0);
-      setComentario("");
-    } catch (error) {
-      console.error("Error enviando reseña:", error);
-      alert("No se pudo enviar la reseña. Intenta nuevamente.");
+  // Enviar formulario
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMensaje(null);
+    setError(null);
+
+    try {
+      const data = new FormData();
+      data.append("nombre", formData.nombre);
+      data.append("descripcion", formData.descripcion);
+      data.append("categoria", formData.categoria);
+      data.append("telefono", formData.telefono);
+      data.append("direccion", formData.direccion);
+      data.append("lat", formData.ubicacion.lat);
+      data.append("lng", formData.ubicacion.lng);
+      data.append("calificacion", formData.calificacion);
+      if (imagen) data.append("imagen", imagen);
+
+      await axios.post("http://localhost:5000/api/tiendas", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setMensaje("Tienda registrada exitosamente.");
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err) {
+      console.error("Error registrando tienda:", err);
+      setError("Hubo un problema al registrar la tienda.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (!tienda) return <p>Cargando detalles...</p>;
+  // Calificación por estrellas
+  const handleRating = (valor) => {
+    setFormData({
+      ...formData,
+      calificacion: valor,
+    });
+  };
 
   return (
-    <div className="container mt-4">
-      <h2>{tienda.nombre}</h2>
-
-      <div className="mb-3">
-        <p><MapPin size={16}/> {tienda.direccion}</p>
-        <p><Phone size={16}/> {tienda.telefono}</p>
-
-        {tienda.whatsapp && (
-          <p>
-            <a
-              href={`https://wa.me/${tienda.whatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              WhatsApp: {tienda.whatsapp}
-            </a>
-          </p>
-        )}
-
-        {tienda.sitioWeb && (
-          <p>
-            <Globe size={16}/> <a href={tienda.sitioWeb} target="_blank" rel="noopener noreferrer">{tienda.sitioWeb}</a>
-          </p>
-        )}
-
-        <p><Clock size={16}/> Registrado: {new Date(tienda.createdAt).toLocaleDateString()}</p>
-        <p>{tienda.descripcion}</p>
-      </div>
-
-      {/* GPS si tiene coordenadas */}
-      {tienda.ubicacion?.lat && tienda.ubicacion?.lng && (
-        <div className="mb-3">
-          <iframe
-            title="Mapa"
-            width="100%"
-            height="300"
-            style={{ border: 0 }}
-            loading="lazy"
-            allowFullScreen
-            src={`https://www.google.com/maps/embed/v1/view?key=SU_API_KEY_AQUI&center=${tienda.ubicacion.lat},${tienda.ubicacion.lng}&zoom=15`}
-          />
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start p-4">
+      <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-6">
+        {/* Encabezado */}
+        <div className="flex items-center mb-6">
+          <Link
+            to="/"
+            className="flex items-center text-gray-500 hover:text-gray-700"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Volver
+          </Link>
         </div>
-      )}
 
-      {/* Opiniones */}
-      <div className="mt-4">
-        <h4>Opiniones de clientes</h4>
-        <form onSubmit={enviarResena}>
-          <div className="mb-2">
-            {[1, 2, 3, 4, 5].map((num) => (
-              <Star
-                key={num}
-                size={24}
-                color={num <= calificacion ? "gold" : "gray"}
-                onClick={() => setCalificacion(num)}
-                style={{ cursor: "pointer" }}
-              />
-            ))}
-            <span className="ms-2">{calificacion} / 5</span>
+        <div className="flex items-center justify-center mb-6">
+          <Store className="w-10 h-10 text-orange-500 mr-2" />
+          <h1 className="text-2xl font-bold text-gray-800">
+            Registro de Tienda
+          </h1>
+        </div>
+
+        {/* Mensajes */}
+        {mensaje && (
+          <div className="flex items-center bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
+            <Check className="w-5 h-5 mr-2" />
+            {mensaje}
+          </div>
+        )}
+        {error && (
+          <div className="flex items-center bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+            <X className="w-5 h-5 mr-2" />
+            {error}
+          </div>
+        )}
+
+        {/* Formulario */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Nombre */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Nombre de la tienda
+            </label>
+            <input
+              type="text"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              required
+            />
           </div>
 
-          <textarea
-            className="form-control mb-2"
-            placeholder="Escriba su comentario..."
-            value={comentario}
-            onChange={(e) => setComentario(e.target.value)}
-          />
+          {/* Descripción */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Descripción
+            </label>
+            <textarea
+              name="descripcion"
+              value={formData.descripcion}
+              onChange={handleChange}
+              rows="3"
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              required
+            ></textarea>
+          </div>
 
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? "Enviando..." : "Enviar reseña"}
-          </button>
+          {/* Categoría */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Categoría
+            </label>
+            <select
+              name="categoria"
+              value={formData.categoria}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              required
+            >
+              <option value="">Seleccione una categoría</option>
+              {categorias.map((cat) => (
+                <option key={cat._id} value={cat.nombre}>
+                  {cat.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Teléfono */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Teléfono / WhatsApp
+            </label>
+            <input
+              type="tel"
+              name="telefono"
+              value={formData.telefono}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              required
+            />
+          </div>
+
+          {/* Dirección */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Dirección
+            </label>
+            <input
+              type="text"
+              name="direccion"
+              value={formData.direccion}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              required
+            />
+          </div>
+
+          {/* Ubicación */}
+          <div className="flex items-center">
+            <button
+              type="button"
+              onClick={obtenerUbicacion}
+              className="flex items-center px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              <MapPin className="w-4 h-4 mr-2" />
+              Obtener Ubicación
+            </button>
+            {formData.ubicacion.lat && (
+              <span className="ml-4 text-sm text-gray-600">
+                Lat: {formData.ubicacion.lat}, Lng: {formData.ubicacion.lng}
+              </span>
+            )}
+          </div>
+
+          {/* Imagen */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Imagen de la tienda
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImagen}
+              className="mt-1"
+            />
+            {preview && (
+              <img
+                src={preview}
+                alt="Vista previa"
+                className="mt-2 w-48 h-48 object-cover rounded-lg border"
+              />
+            )}
+          </div>
+
+          {/* Calificación */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Calificación
+            </label>
+            <div className="flex items-center space-x-2 mt-1">
+              {[1, 2, 3, 4, 5].map((valor) => (
+                <Star
+                  key={valor}
+                  onClick={() => handleRating(valor)}
+                  className={`w-6 h-6 cursor-pointer ${
+                    valor <= formData.calificacion
+                      ? "text-yellow-400 fill-yellow-400"
+                      : "text-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Botón */}
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center items-center px-4 py-2 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600"
+            >
+              {loading ? "Registrando..." : "Registrar Tienda"}
+            </button>
+          </div>
         </form>
 
-        <div className="mt-4">
-          {resenas.length === 0 ? (
-            <p>No hay reseñas aún. Sé el primero en opinar.</p>
-          ) : (
-            resenas.map((r, index) => (
-              <div key={index} className="border p-2 mb-2 rounded">
-                <div className="d-flex align-items-center">
-                  {[...Array(r.calificacion)].map((_, i) => (
-                    <Star key={i} size={16} color="gold" />
-                  ))}
-                </div>
-                <p className="mb-0">{r.comentario}</p>
-              </div>
-            ))
-          )}
+        {/* Vista Previa */}
+        <div className="mt-10 border-t pt-6">
+          <h2 className="text-lg font-bold text-gray-700 mb-4">
+            Vista Previa de la Tienda
+          </h2>
+          <div className="p-4 border rounded-lg bg-gray-50">
+            {preview && (
+              <img
+                src={preview}
+                alt="Vista previa"
+                className="w-32 h-32 object-cover rounded-lg mb-3"
+              />
+            )}
+            <h3 className="text-xl font-semibold">{formData.nombre}</h3>
+            <p className="text-gray-600">{formData.descripcion}</p>
+            <p className="text-gray-800 font-medium mt-2">
+              Categoría: {formData.categoria}
+            </p>
+            <p className="text-gray-800 mt-1 flex items-center">
+              <Phone className="w-4 h-4 mr-2" /> {formData.telefono}
+            </p>
+            <p className="text-gray-800 mt-1">{formData.direccion}</p>
+            {formData.ubicacion.lat && (
+              <p className="text-sm text-gray-500">
+                Ubicación GPS: {formData.ubicacion.lat}, {formData.ubicacion.lng}
+              </p>
+            )}
+            {/* WhatsApp */}
+            {formData.telefono && (
+              <a
+                href={`https://wa.me/${formData.telefono}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Chatear por WhatsApp
+              </a>
+            )}
+            {/* Calificación */}
+            <div className="mt-3 flex items-center">
+              {[1, 2, 3, 4, 5].map((valor) => (
+                <Star
+                  key={valor}
+                  className={`w-5 h-5 ${
+                    valor <= formData.calificacion
+                      ? "text-yellow-400 fill-yellow-400"
+                      : "text-gray-300"
+                  }`}
+                />
+              ))}
+              <span className="ml-2 text-gray-600">
+                {formData.calificacion} / 5
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default DetallesTienda;
+export default RegistroTienda;
