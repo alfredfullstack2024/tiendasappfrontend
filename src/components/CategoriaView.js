@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Store, Eye, MapPin } from "lucide-react";
+import { ArrowLeft, Store, Eye, MapPin, Search } from "lucide-react";
 import axios from "axios";
 
 const CategoriaView = () => {
@@ -8,6 +8,7 @@ const CategoriaView = () => {
   const [tiendas, setTiendas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [busqueda, setBusqueda] = useState(""); // 🔹 Nuevo estado
 
   useEffect(() => {
     cargarTiendas();
@@ -16,7 +17,6 @@ const CategoriaView = () => {
   const cargarTiendas = async () => {
     try {
       setLoading(true);
-      // 🔹 URL absoluta de su backend en Render
       const response = await axios.get(
         `https://tiendasappbackend.onrender.com/api/tiendas/categoria/${encodeURIComponent(
           categoria
@@ -63,6 +63,15 @@ const CategoriaView = () => {
 
   const truncarTexto = (texto, limite = 100) =>
     texto.length <= limite ? texto : texto.substring(0, limite) + "...";
+
+  // 🔹 Filtro de búsqueda en tiempo real
+  const tiendasFiltradas = tiendas.filter((tienda) => {
+    const termino = busqueda.toLowerCase();
+    return (
+      tienda.nombreEstablecimiento?.toLowerCase().includes(termino) ||
+      tienda.descripcionVentas?.toLowerCase().includes(termino)
+    );
+  });
 
   if (loading) {
     return (
@@ -120,19 +129,29 @@ const CategoriaView = () => {
         </div>
       </div>
 
+      {/* 🔹 Input de búsqueda */}
+      <div className="buscador-container">
+        <div className="buscador">
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Buscar negocios en esta categoría..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
+        </div>
+      </div>
+
       <div className="container">
-        {tiendas.length === 0 ? (
+        {tiendasFiltradas.length === 0 ? (
           <div className="empty-state">
             <Store size={64} color="#94a3b8" />
-            <h3>Aún no hay negocios en esta categoría</h3>
-            <p>Sé el primero en registrar tu negocio en {categoria}</p>
-            <Link to="/registro" className="btn btn-primary">
-              Registrar mi negocio
-            </Link>
+            <h3>No hay coincidencias</h3>
+            <p>Intenta con otro término de búsqueda</p>
           </div>
         ) : (
           <div className="tiendas-grid">
-            {tiendas.map((tienda) => (
+            {tiendasFiltradas.map((tienda) => (
               <div key={tienda._id} className="tienda-card">
                 <div className="tienda-card-image">
                   {tienda.fotos && tienda.fotos.length > 0 ? (
