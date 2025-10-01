@@ -8,7 +8,7 @@ const CategoriaView = () => {
   const [tiendas, setTiendas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [busqueda, setBusqueda] = useState(""); // 🔹 Nuevo estado
+  const [busqueda, setBusqueda] = useState(""); // 🔹 Estado de búsqueda
 
   useEffect(() => {
     cargarTiendas();
@@ -62,9 +62,9 @@ const CategoriaView = () => {
   };
 
   const truncarTexto = (texto, limite = 100) =>
-    texto.length <= limite ? texto : texto.substring(0, limite) + "...";
+    texto?.length <= limite ? texto : texto?.substring(0, limite) + "...";
 
-  // 🔹 Filtro de búsqueda en tiempo real
+  // 🔎 Filtro en tiempo real
   const tiendasFiltradas = tiendas.filter((tienda) => {
     const termino = busqueda.toLowerCase();
     return (
@@ -112,6 +112,7 @@ const CategoriaView = () => {
 
   return (
     <div className="categoria-view">
+      {/* 🔹 Encabezado */}
       <div className="categoria-header">
         <div className="categoria-header-content">
           <Link to="/" className="back-button">
@@ -129,10 +130,10 @@ const CategoriaView = () => {
         </div>
       </div>
 
-      {/* 🔹 Input de búsqueda */}
+      {/* 🔎 Buscador bonito */}
       <div className="buscador-container">
-        <div className="buscador">
-          <Search size={18} />
+        <div className="buscador-input">
+          <Search size={20} color="#6b7280" />
           <input
             type="text"
             placeholder="Buscar negocios en esta categoría..."
@@ -142,6 +143,7 @@ const CategoriaView = () => {
         </div>
       </div>
 
+      {/* 🔹 Resultados */}
       <div className="container">
         {tiendasFiltradas.length === 0 ? (
           <div className="empty-state">
@@ -201,6 +203,7 @@ const CategoriaView = () => {
         )}
       </div>
 
+      {/* 🔹 CTA */}
       {tiendas.length > 0 && (
         <div
           style={{
