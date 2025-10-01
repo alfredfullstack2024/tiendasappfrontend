@@ -9,6 +9,7 @@ import {
   Phone,
   Clock,
   ExternalLink,
+  X,
 } from "lucide-react";
 import axios from "axios";
 
@@ -18,6 +19,7 @@ const DetallesTienda = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [imagenActiva, setImagenActiva] = useState(0);
+  const [imagenAmpliada, setImagenAmpliada] = useState(null); // 🔹 Estado para el modal
 
   useEffect(() => {
     cargarTienda();
@@ -26,7 +28,6 @@ const DetallesTienda = () => {
   const cargarTienda = async () => {
     try {
       setLoading(true);
-      // 🔹 URL absoluta del backend
       const response = await axios.get(
         `https://tiendasappbackend.onrender.com/api/tiendas/${id}`
       );
@@ -174,6 +175,8 @@ const DetallesTienda = () => {
                 <img
                   src={tienda.fotos[imagenActiva].url}
                   alt={tienda.nombreEstablecimiento}
+                  style={{ cursor: "zoom-in" }}
+                  onClick={() => setImagenAmpliada(tienda.fotos[imagenActiva].url)} // 🔹 Click abre modal
                   onError={(e) => {
                     e.target.style.display = "none";
                     e.target.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:4rem;background:linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 100%);">${iconoCategoria(
@@ -204,6 +207,52 @@ const DetallesTienda = () => {
               </div>
             )}
           </div>
+
+          {/* 🔹 Modal de imagen ampliada */}
+          {imagenAmpliada && (
+            <div
+              className="modal-imagen"
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgba(0,0,0,0.8)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9999,
+              }}
+              onClick={() => setImagenAmpliada(null)}
+            >
+              <button
+                style={{
+                  position: "absolute",
+                  top: "20px",
+                  right: "20px",
+                  background: "none",
+                  border: "none",
+                  color: "white",
+                  fontSize: "2rem",
+                  cursor: "pointer",
+                }}
+                onClick={() => setImagenAmpliada(null)}
+              >
+                <X size={32} />
+              </button>
+              <img
+                src={imagenAmpliada}
+                alt="Imagen ampliada"
+                style={{
+                  maxWidth: "90%",
+                  maxHeight: "90%",
+                  borderRadius: "8px",
+                  boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+                }}
+              />
+            </div>
+          )}
 
           <div className="detalle-info">
             <h1 className="detalle-titulo">{tienda.nombreEstablecimiento}</h1>
