@@ -10,7 +10,6 @@ import {
   MapPin,
   Phone,
   MessageCircle,
-  Star,
 } from "lucide-react";
 import axios from "axios";
 
@@ -31,10 +30,9 @@ const RegistroTienda = () => {
     telefono: "",
     direccion: "",
     ubicacion: { lat: null, lng: null },
-    calificacion: 0,
   });
 
-  // Obtener categorías al cargar
+  // Obtener categorías
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -47,7 +45,7 @@ const RegistroTienda = () => {
     fetchCategorias();
   }, []);
 
-  // Manejo de cambio en inputs
+  // Manejo de inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -101,7 +99,6 @@ const RegistroTienda = () => {
       data.append("direccion", formData.direccion);
       data.append("lat", formData.ubicacion.lat);
       data.append("lng", formData.ubicacion.lng);
-      data.append("calificacion", formData.calificacion);
       if (imagen) data.append("imagen", imagen);
 
       await axios.post("http://localhost:5000/api/tiendas", data, {
@@ -116,14 +113,6 @@ const RegistroTienda = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Calificación por estrellas
-  const handleRating = (valor) => {
-    setFormData({
-      ...formData,
-      calificacion: valor,
-    });
   };
 
   return (
@@ -281,26 +270,6 @@ const RegistroTienda = () => {
             )}
           </div>
 
-          {/* Calificación */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Calificación
-            </label>
-            <div className="flex items-center space-x-2 mt-1">
-              {[1, 2, 3, 4, 5].map((valor) => (
-                <Star
-                  key={valor}
-                  onClick={() => handleRating(valor)}
-                  className={`w-6 h-6 cursor-pointer ${
-                    valor <= formData.calificacion
-                      ? "text-yellow-400 fill-yellow-400"
-                      : "text-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
           {/* Botón */}
           <div>
             <button
@@ -352,22 +321,6 @@ const RegistroTienda = () => {
                 Chatear por WhatsApp
               </a>
             )}
-            {/* Calificación */}
-            <div className="mt-3 flex items-center">
-              {[1, 2, 3, 4, 5].map((valor) => (
-                <Star
-                  key={valor}
-                  className={`w-5 h-5 ${
-                    valor <= formData.calificacion
-                      ? "text-yellow-400 fill-yellow-400"
-                      : "text-gray-300"
-                  }`}
-                />
-              ))}
-              <span className="ml-2 text-gray-600">
-                {formData.calificacion} / 5
-              </span>
-            </div>
           </div>
         </div>
       </div>
