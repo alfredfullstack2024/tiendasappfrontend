@@ -1,331 +1,326 @@
-// src/components/RegistroTienda.js
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
-  Store,
   ArrowLeft,
-  Upload,
-  Check,
-  X,
-  MapPin,
-  Phone,
   MessageCircle,
+  MapPin,
+  Globe,
+  Share2,
+  Phone,
+  Clock,
+  ExternalLink,
 } from "lucide-react";
 import axios from "axios";
 
-const RegistroTienda = () => {
-  const navigate = useNavigate();
-  const [categorias, setCategorias] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [imagen, setImagen] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [mensaje, setMensaje] = useState(null);
-  const [error, setError] = useState(null);
+const DetallesTienda = () => {
+  const { id } = useParams();
+  const [tienda, setTienda] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [imagenActiva, setImagenActiva] = useState(0);
 
-  // Campos del formulario
-  const [formData, setFormData] = useState({
-    nombre: "",
-    descripcion: "",
-    categoria: "",
-    telefono: "",
-    direccion: "",
-    ubicacion: { lat: null, lng: null },
-  });
-
-  // Obtener categorías
   useEffect(() => {
-    const fetchCategorias = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/categorias");
-        setCategorias(response.data);
-      } catch (err) {
-        console.error("Error cargando categorías:", err);
-      }
-    };
-    fetchCategorias();
-  }, []);
+    cargarTienda();
+  }, [id]);
 
-  // Manejo de inputs
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  // Manejo de imagen
-  const handleImagen = (e) => {
-    const file = e.target.files[0];
-    setImagen(file);
-    setPreview(URL.createObjectURL(file));
-  };
-
-  // Obtener ubicación GPS
-  const obtenerUbicacion = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          setFormData({
-            ...formData,
-            ubicacion: { lat, lng },
-          });
-        },
-        (err) => {
-          console.error("Error obteniendo ubicación:", err);
-          setError("No se pudo obtener la ubicación.");
-        }
-      );
-    } else {
-      setError("El navegador no soporta geolocalización.");
-    }
-  };
-
-  // Enviar formulario
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMensaje(null);
-    setError(null);
-
+  const cargarTienda = async () => {
     try {
-      const data = new FormData();
-      data.append("nombre", formData.nombre);
-      data.append("descripcion", formData.descripcion);
-      data.append("categoria", formData.categoria);
-      data.append("telefono", formData.telefono);
-      data.append("direccion", formData.direccion);
-      data.append("lat", formData.ubicacion.lat);
-      data.append("lng", formData.ubicacion.lng);
-      if (imagen) data.append("imagen", imagen);
+      setLoading(true);
+      // 🔹 URL absoluta del backend
+      const response = await axios.get(
+        `https://tiendasappbackend.onrender.com/api/tiendas/${id}`
+      );
 
-      await axios.post("http://localhost:5000/api/tiendas", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      setMensaje("Tienda registrada exitosamente.");
-      setTimeout(() => navigate("/"), 2000);
+      if (response.data && response.data._id) {
+        setTienda(response.data);
+      } else {
+        setError("Tienda no encontrada");
+      }
     } catch (err) {
-      console.error("Error registrando tienda:", err);
-      setError("Hubo un problema al registrar la tienda.");
+      console.error("Error cargando tienda:", err);
+      setError("Tienda no encontrada");
     } finally {
       setLoading(false);
     }
   };
 
+  const iconoCategoria = (categoria) => {
+    const iconos = {
+      "Comidas y Restaurantes": "🍽️",
+      "Tecnología y Desarrollo": "💻",
+      Gimnasios: "🏋️",
+      "Papelería y Librerías": "📚",
+      Mascotas: "🐱",
+      Odontología: "🦷",
+      Ópticas: "👓",
+      Pastelerías: "🎂",
+      Pizzerías: "🍕",
+      "Ropa de Niños": "👶",
+      "Ropa de Mujeres": "👗",
+      "Ropa Deportiva": "👟",
+      "Salones de Belleza": "💅",
+      SPA: "🧘",
+      "Talleres de Mecánica": "🚗",
+      "Tiendas Deportivas": "🏆",
+      Veterinarias: "🦴",
+      Vidrierías: "🪟",
+    };
+    return iconos[categoria] || "🏪";
+  };
+
+  const abrirWhatsApp = () => {
+    const telefono = tienda.telefonoWhatsapp.replace(/\D/g, "");
+    const mensaje = `Hola! Estás siendo contactado por TIENDASAPP. Me interesa conocer más sobre ${tienda.nombreEstablecimiento}.`;
+    window.open(
+      `https://wa.me/57${telefono}?text=${encodeURIComponent(mensaje)}`,
+      "_blank"
+    );
+  };
+
+  const abrirMaps = () => {
+    const direccion = encodeURIComponent(tienda.direccion);
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${direccion}`,
+      "_blank"
+    );
+  };
+
+  const abrirPaginaWeb = () => {
+    let url = tienda.paginaWeb;
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+    window.open(url, "_blank");
+  };
+
+  const compartirTienda = async () => {
+    const url = window.location.href;
+    const titulo = `${tienda.nombreEstablecimiento} - TiendasApp`;
+    const texto = `Descubre ${tienda.nombreEstablecimiento} en TiendasApp`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: titulo, text: texto, url });
+      } catch (err) {
+        console.log("Error compartiendo:", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        alert("Enlace copiado al portapapeles");
+      } catch (err) {
+        console.log("Error copiando al portapapeles:", err);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Cargando información...</p>
+      </div>
+    );
+  }
+
+  if (error || !tienda) {
+    return (
+      <div className="detalle-tienda">
+        <div className="detalle-header">
+          <div className="container">
+            <Link to="/" className="back-button">
+              <ArrowLeft size={20} />
+              Volver al menú
+            </Link>
+          </div>
+        </div>
+        <div className="container">
+          <div className="empty-state">
+            <h3>{error}</h3>
+            <Link to="/" className="btn btn-primary">
+              Volver al inicio
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start p-4">
-      <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-6">
-        {/* Encabezado */}
-        <div className="flex items-center mb-6">
-          <Link
-            to="/"
-            className="flex items-center text-gray-500 hover:text-gray-700"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Volver
+    <div className="detalle-tienda">
+      <div className="detalle-header">
+        <div className="container">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Link
+              to={`/categoria/${encodeURIComponent(tienda.categoria)}`}
+              className="back-button"
+            >
+              <ArrowLeft size={20} />
+              Volver a {tienda.categoria}
+            </Link>
+            <button onClick={compartirTienda} className="back-button">
+              <Share2 size={20} />
+              Compartir
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="detalle-content">
+        <div className="detalle-card">
+          <div className="detalle-imagenes">
+            {tienda.fotos && tienda.fotos.length > 0 ? (
+              <>
+                <img
+                  src={tienda.fotos[imagenActiva].url}
+                  alt={tienda.nombreEstablecimiento}
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    e.target.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:4rem;background:linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 100%);">${iconoCategoria(
+                      tienda.categoria
+                    )}</div>`;
+                  }}
+                />
+                {tienda.fotos.length > 1 && (
+                  <div className="imagen-thumbnails">
+                    {tienda.fotos.map((foto, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setImagenActiva(index)}
+                        className={`thumbnail ${index === imagenActiva ? "active" : ""}`}
+                      >
+                        <img
+                          src={foto.url}
+                          alt={`${tienda.nombreEstablecimiento} ${index + 1}`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div style={{ fontSize: "4rem" }}>
+                {iconoCategoria(tienda.categoria)}
+              </div>
+            )}
+          </div>
+
+          <div className="detalle-info">
+            <h1 className="detalle-titulo">{tienda.nombreEstablecimiento}</h1>
+            <p className="detalle-categoria">{tienda.categoria}</p>
+            <p className="detalle-descripcion">{tienda.descripcionVentas}</p>
+
+            <div className="detalle-acciones">
+              <button onClick={abrirWhatsApp} className="accion-btn whatsapp-btn">
+                <MessageCircle size={20} />
+                Contactar por WhatsApp
+              </button>
+
+              <button onClick={abrirMaps} className="accion-btn maps-btn">
+                <MapPin size={20} />
+                Ver ubicación en Maps
+              </button>
+
+              {tienda.paginaWeb && (
+                <button onClick={abrirPaginaWeb} className="accion-btn web-btn">
+                  <Globe size={20} />
+                  Visitar página web
+                </button>
+              )}
+            </div>
+
+            <div className="detalle-info-adicional">
+              <div className="info-item">
+                <MapPin size={20} />
+                <div>
+                  <strong>Dirección:</strong>
+                  <br />
+                  {tienda.direccion}
+                </div>
+              </div>
+
+              <div className="info-item">
+                <Phone size={20} />
+                <div>
+                  <strong>WhatsApp:</strong>
+                  <br />
+                  {tienda.telefonoWhatsapp}
+                </div>
+              </div>
+
+              {tienda.paginaWeb && (
+                <div className="info-item">
+                  <Globe size={20} />
+                  <div>
+                    <strong>Sitio web:</strong>
+                    <br />
+                    <a
+                      href={
+                        tienda.paginaWeb.startsWith("http")
+                          ? tienda.paginaWeb
+                          : `https://${tienda.paginaWeb}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "#3b82f6", textDecoration: "none" }}
+                    >
+                      {tienda.paginaWeb}
+                      <ExternalLink size={14} style={{ marginLeft: "0.25rem", display: "inline" }} />
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {tienda.redesSociales && (
+                <div className="info-item">
+                  <Share2 size={20} />
+                  <div>
+                    <strong>Redes sociales:</strong>
+                    <br />
+                    {tienda.redesSociales}
+                  </div>
+                </div>
+              )}
+
+              <div className="info-item">
+                <Clock size={20} />
+                <div>
+                  <strong>Registrado:</strong>
+                  <br />
+                  {new Date(tienda.fechaCreacion).toLocaleDateString("es-CO", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          background: "#f8fafc",
+          padding: "3rem 0",
+          textAlign: "center",
+          marginTop: "2rem",
+        }}
+      >
+        <div className="container">
+          <h3 style={{ marginBottom: "1rem", color: "#374151" }}>
+            ¿Tienes un negocio como este?
+          </h3>
+          <p style={{ color: "#6b7280", marginBottom: "2rem" }}>
+            Registra tu negocio gratis y conecta con más clientes
+          </p>
+          <Link to="/registro" className="btn-registro">
+            Registrar mi negocio
           </Link>
-        </div>
-
-        <div className="flex items-center justify-center mb-6">
-          <Store className="w-10 h-10 text-orange-500 mr-2" />
-          <h1 className="text-2xl font-bold text-gray-800">
-            Registro de Tienda
-          </h1>
-        </div>
-
-        {/* Mensajes */}
-        {mensaje && (
-          <div className="flex items-center bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
-            <Check className="w-5 h-5 mr-2" />
-            {mensaje}
-          </div>
-        )}
-        {error && (
-          <div className="flex items-center bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
-            <X className="w-5 h-5 mr-2" />
-            {error}
-          </div>
-        )}
-
-        {/* Formulario */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Nombre */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Nombre de la tienda
-            </label>
-            <input
-              type="text"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              required
-            />
-          </div>
-
-          {/* Descripción */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Descripción
-            </label>
-            <textarea
-              name="descripcion"
-              value={formData.descripcion}
-              onChange={handleChange}
-              rows="3"
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              required
-            ></textarea>
-          </div>
-
-          {/* Categoría */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Categoría
-            </label>
-            <select
-              name="categoria"
-              value={formData.categoria}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              required
-            >
-              <option value="">Seleccione una categoría</option>
-              {categorias.map((cat) => (
-                <option key={cat._id} value={cat.nombre}>
-                  {cat.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Teléfono */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Teléfono / WhatsApp
-            </label>
-            <input
-              type="tel"
-              name="telefono"
-              value={formData.telefono}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              required
-            />
-          </div>
-
-          {/* Dirección */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Dirección
-            </label>
-            <input
-              type="text"
-              name="direccion"
-              value={formData.direccion}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              required
-            />
-          </div>
-
-          {/* Ubicación */}
-          <div className="flex items-center">
-            <button
-              type="button"
-              onClick={obtenerUbicacion}
-              className="flex items-center px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            >
-              <MapPin className="w-4 h-4 mr-2" />
-              Obtener Ubicación
-            </button>
-            {formData.ubicacion.lat && (
-              <span className="ml-4 text-sm text-gray-600">
-                Lat: {formData.ubicacion.lat}, Lng: {formData.ubicacion.lng}
-              </span>
-            )}
-          </div>
-
-          {/* Imagen */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Imagen de la tienda
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImagen}
-              className="mt-1"
-            />
-            {preview && (
-              <img
-                src={preview}
-                alt="Vista previa"
-                className="mt-2 w-48 h-48 object-cover rounded-lg border"
-              />
-            )}
-          </div>
-
-          {/* Botón */}
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center items-center px-4 py-2 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600"
-            >
-              {loading ? "Registrando..." : "Registrar Tienda"}
-            </button>
-          </div>
-        </form>
-
-        {/* Vista Previa */}
-        <div className="mt-10 border-t pt-6">
-          <h2 className="text-lg font-bold text-gray-700 mb-4">
-            Vista Previa de la Tienda
-          </h2>
-          <div className="p-4 border rounded-lg bg-gray-50">
-            {preview && (
-              <img
-                src={preview}
-                alt="Vista previa"
-                className="w-32 h-32 object-cover rounded-lg mb-3"
-              />
-            )}
-            <h3 className="text-xl font-semibold">{formData.nombre}</h3>
-            <p className="text-gray-600">{formData.descripcion}</p>
-            <p className="text-gray-800 font-medium mt-2">
-              Categoría: {formData.categoria}
-            </p>
-            <p className="text-gray-800 mt-1 flex items-center">
-              <Phone className="w-4 h-4 mr-2" /> {formData.telefono}
-            </p>
-            <p className="text-gray-800 mt-1">{formData.direccion}</p>
-            {formData.ubicacion.lat && (
-              <p className="text-sm text-gray-500">
-                Ubicación GPS: {formData.ubicacion.lat}, {formData.ubicacion.lng}
-              </p>
-            )}
-            {/* WhatsApp */}
-            {formData.telefono && (
-              <a
-                href={`https://wa.me/${formData.telefono}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-flex items-center px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-              >
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Chatear por WhatsApp
-              </a>
-            )}
-          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default RegistroTienda;
+export default DetallesTienda;
