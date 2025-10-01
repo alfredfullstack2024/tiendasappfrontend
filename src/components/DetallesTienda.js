@@ -22,13 +22,13 @@ const DetallesTienda = () => {
   const [imagenActiva, setImagenActiva] = useState(0);
 
   // Nueva lógica para reseñas
-  const [reseñas, setReseñas] = useState([]);
+  const [resenas, setResenas] = useState([]);
   const [nuevaReseña, setNuevaReseña] = useState({ calificacion: 0, comentario: "" });
   const [enviandoReseña, setEnviandoReseña] = useState(false);
 
   useEffect(() => {
     cargarTienda();
-    cargarReseñas();
+    cargarResenas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -54,13 +54,13 @@ const DetallesTienda = () => {
   };
 
   // Cargar reseñas desde backend (asegúrate de tener esta ruta en el backend)
-  const cargarReseñas = async () => {
+  const cargarResenas = async () => {
     try {
       const response = await axios.get(
-        `https://tiendasappbackend.onrender.com/api/tiendas/${id}/reseñas`
+        `https://tiendasappbackend.onrender.com/api/tiendas/${id}/resenas`
       );
       if (Array.isArray(response.data)) {
-        setReseñas(response.data);
+        setResenas(response.data);
       }
     } catch (err) {
       console.error("Error cargando reseñas:", err);
@@ -76,11 +76,11 @@ const DetallesTienda = () => {
     try {
       setEnviandoReseña(true);
       await axios.post(
-        `https://tiendasappbackend.onrender.com/api/tiendas/${id}/reseñas`,
+        `https://tiendasappbackend.onrender.com/api/tiendas/${id}/resenas`,
         nuevaReseña
       );
       setNuevaReseña({ calificacion: 0, comentario: "" });
-      cargarReseñas();
+      cargarResenas();
     } catch (err) {
       console.error("Error enviando reseña:", err);
       alert("No se pudo enviar la reseña. Intenta nuevamente.");
@@ -192,10 +192,10 @@ const DetallesTienda = () => {
   }
 
   // cálculo simple de promedio (por si quiere mostrarse)
-  const promedio = reseñas.length
+  const promedio = resenas.length
     ? (
-        reseñas.reduce((acc, r) => acc + (r.calificacion ? Number(r.calificacion) : 0), 0) /
-        reseñas.length
+        resenas.reduce((acc, r) => acc + (r.calificacion ? Number(r.calificacion) : 0), 0) /
+        resenas.length
       ).toFixed(1)
     : null;
 
@@ -270,7 +270,7 @@ const DetallesTienda = () => {
                     <Star key={s} size={16} style={{ color: s <= Math.round(promedio) ? "#facc15" : "#d1d5db", marginRight: 2 }} />
                   ))}
                 </div>
-                <small style={{ color: "#6b7280" }}>{promedio} · {reseñas.length} {reseñas.length === 1 ? "reseña" : "reseñas"}</small>
+                <small style={{ color: "#6b7280" }}>{promedio} · {resenas.length} {resenas.length === 1 ? "reseña" : "resenas"}</small>
               </div>
             )}
 
@@ -422,11 +422,11 @@ const DetallesTienda = () => {
 
           <hr style={{ margin: "1.5rem 0", borderColor: "#eef2f7" }} />
 
-          <div className="reseñas-list">
-            {reseñas.length === 0 ? (
-              <p style={{ color: "#6b7280" }}>No hay reseñas aún. Sé el primero en opinar.</p>
+          <div className="resenas-list">
+            {resenas.length === 0 ? (
+              <p style={{ color: "#6b7280" }}>No hay resenas aún. Sé el primero en opinar.</p>
             ) : (
-              reseñas.map((r, index) => (
+              resenas.map((r, index) => (
                 <div key={index} style={{ padding: "1rem 0", borderBottom: "1px solid #f1f5f9" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -472,3 +472,4 @@ const DetallesTienda = () => {
 };
 
 export default DetallesTienda;
+
