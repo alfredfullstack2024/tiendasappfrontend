@@ -1,4 +1,3 @@
-// src/components/RegistroTienda.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Store, ArrowLeft, Upload, Check, X } from "lucide-react";
@@ -47,11 +46,15 @@ const RegistroTienda = () => {
     }));
   };
 
+  // ✅ Ahora se acumulan las imágenes en móvil y en PC (máx 3)
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files).slice(0, 3);
-    setArchivos(files);
+    let nuevosArchivos = [...archivos, ...Array.from(e.target.files)];
+    if (nuevosArchivos.length > 3) {
+      nuevosArchivos = nuevosArchivos.slice(0, 3);
+    }
+    setArchivos(nuevosArchivos);
 
-    const previews = files.map((file) => {
+    const previews = nuevosArchivos.map((file) => {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (ev) => resolve(ev.target.result);
@@ -187,6 +190,7 @@ const RegistroTienda = () => {
         )}
 
         <form onSubmit={handleSubmit} className="registro-form">
+          {/* Campos de texto */}
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="nombreEstablecimiento">
@@ -198,7 +202,6 @@ const RegistroTienda = () => {
                 name="nombreEstablecimiento"
                 value={formData.nombreEstablecimiento}
                 onChange={handleInputChange}
-                placeholder="Ej: Restaurante El Buen Sabor"
                 required
               />
             </div>
@@ -213,7 +216,6 @@ const RegistroTienda = () => {
                 name="direccion"
                 value={formData.direccion}
                 onChange={handleInputChange}
-                placeholder="Ej: Calle 123 #45-67, Bogotá"
                 required
               />
             </div>
@@ -246,7 +248,6 @@ const RegistroTienda = () => {
                 name="telefonoWhatsapp"
                 value={formData.telefonoWhatsapp}
                 onChange={handleInputChange}
-                placeholder="Ej: 3001234567"
                 required
               />
             </div>
@@ -262,39 +263,13 @@ const RegistroTienda = () => {
                 name="descripcionVentas"
                 value={formData.descripcionVentas}
                 onChange={handleInputChange}
-                placeholder="Describe qué vendes, tus especialidades, horarios, etc."
                 rows="4"
                 required
               />
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="paginaWeb">Página Web (opcional)</label>
-              <input
-                type="url"
-                id="paginaWeb"
-                name="paginaWeb"
-                value={formData.paginaWeb}
-                onChange={handleInputChange}
-                placeholder="https://www.mitienda.com"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="redesSociales">Redes Sociales (opcional)</label>
-              <input
-                type="text"
-                id="redesSociales"
-                name="redesSociales"
-                value={formData.redesSociales}
-                onChange={handleInputChange}
-                placeholder="@mitienda, facebook.com/mitienda"
-              />
-            </div>
-          </div>
-
+          {/* Imagenes */}
           <div className="form-group">
             <label>Fotos de tus productos (máximo 3)</label>
             <div className="upload-area">
@@ -308,8 +283,7 @@ const RegistroTienda = () => {
               />
               <label htmlFor="fotos" className="upload-label">
                 <Upload size={24} />
-                <span>Haz clic para seleccionar imágenes</span>
-                <small>JPG, PNG - Máximo 5MB por imagen</small>
+                <span>Seleccionar imágenes</span>
               </label>
             </div>
 
@@ -317,7 +291,11 @@ const RegistroTienda = () => {
               <div className="image-previews">
                 {previewImages.map((preview, index) => (
                   <div key={index} className="image-preview">
-                    <img src={preview} alt={`Preview ${index + 1}`} />
+                    <img
+                      src={preview}
+                      alt={`Preview ${index + 1}`}
+                      style={{ width: "120px", height: "120px", objectFit: "cover" }}
+                    />
                     <button
                       type="button"
                       onClick={() => eliminarImagen(index)}
@@ -333,17 +311,7 @@ const RegistroTienda = () => {
 
           <div className="form-actions">
             <button type="submit" disabled={loading} className="btn-submit">
-              {loading ? (
-                <>
-                  <div className="loading-spinner"></div>
-                  Registrando...
-                </>
-              ) : (
-                <>
-                  <Check size={20} />
-                  Registrar mi tienda
-                </>
-              )}
+              {loading ? "Registrando..." : "Registrar mi tienda"}
             </button>
           </div>
         </form>
