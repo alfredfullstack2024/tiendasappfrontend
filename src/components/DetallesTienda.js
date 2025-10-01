@@ -1,322 +1,125 @@
-import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import {
-  ArrowLeft,
-  MessageCircle,
-  MapPin,
-  Globe,
-  Share2,
-  Phone,
-  Clock,
-  ExternalLink,
-} from "lucide-react";
+// src/components/DetallesTienda.js
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { MapPin, Phone, Globe, Calendar, ArrowLeft, MessageCircle } from "lucide-react";
 
 const DetallesTienda = () => {
   const { id } = useParams();
   const [tienda, setTienda] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [imagenActiva, setImagenActiva] = useState(0);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    cargarTienda();
+    const fetchTienda = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/tiendas/${id}`
+        );
+        setTienda(response.data);
+      } catch (err) {
+        setError("Error cargando los detalles de la tienda");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTienda();
   }, [id]);
 
-  const cargarTienda = async () => {
-    try {
-      setLoading(true);
-      // 🔹 URL absoluta del backend
-      const response = await axios.get(
-        `https://tiendasappbackend.onrender.com/api/tiendas/${id}`
-      );
-
-      if (response.data && response.data._id) {
-        setTienda(response.data);
-      } else {
-        setError("Tienda no encontrada");
-      }
-    } catch (err) {
-      console.error("Error cargando tienda:", err);
-      setError("Tienda no encontrada");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const iconoCategoria = (categoria) => {
-    const iconos = {
-      "Comidas y Restaurantes": "🍽️",
-      "Tecnología y Desarrollo": "💻",
-      Gimnasios: "🏋️",
-      "Papelería y Librerías": "📚",
-      Mascotas: "🐱",
-      Odontología: "🦷",
-      Ópticas: "👓",
-      Pastelerías: "🎂",
-      Pizzerías: "🍕",
-      "Ropa de Niños": "👶",
-      "Ropa de Mujeres": "👗",
-      "Ropa Deportiva": "👟",
-      "Salones de Belleza": "💅",
-      SPA: "🧘",
-      "Talleres de Mecánica": "🚗",
-      "Tiendas Deportivas": "🏆",
-      Veterinarias: "🦴",
-      Vidrierías: "🪟",
-    };
-    return iconos[categoria] || "🏪";
-  };
-
-  const abrirWhatsApp = () => {
-    const telefono = tienda.telefonoWhatsapp.replace(/\D/g, "");
-    const mensaje = `Hola! Estás siendo contactado por TIENDASAPP. Me interesa conocer más sobre ${tienda.nombreEstablecimiento}.`;
-    window.open(
-      `https://wa.me/57${telefono}?text=${encodeURIComponent(mensaje)}`,
-      "_blank"
-    );
-  };
-
-  const abrirMaps = () => {
-    const direccion = encodeURIComponent(tienda.direccion);
-    window.open(
-      `https://www.google.com/maps/search/?api=1&query=${direccion}`,
-      "_blank"
-    );
-  };
-
-  const abrirPaginaWeb = () => {
-    let url = tienda.paginaWeb;
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      url = "https://" + url;
-    }
-    window.open(url, "_blank");
-  };
-
-  const compartirTienda = async () => {
-    const url = window.location.href;
-    const titulo = `${tienda.nombreEstablecimiento} - TiendasApp`;
-    const texto = `Descubre ${tienda.nombreEstablecimiento} en TiendasApp`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: titulo, text: texto, url });
-      } catch (err) {
-        console.log("Error compartiendo:", err);
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(url);
-        alert("Enlace copiado al portapapeles");
-      } catch (err) {
-        console.log("Error copiando al portapapeles:", err);
-      }
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Cargando información...</p>
-      </div>
-    );
-  }
-
-  if (error || !tienda) {
-    return (
-      <div className="detalle-tienda">
-        <div className="detalle-header">
-          <div className="container">
-            <Link to="/" className="back-button">
-              <ArrowLeft size={20} />
-              Volver al menú
-            </Link>
-          </div>
-        </div>
-        <div className="container">
-          <div className="empty-state">
-            <h3>{error}</h3>
-            <Link to="/" className="btn btn-primary">
-              Volver al inicio
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <p className="text-center mt-10">Cargando...</p>;
+  if (error) return <p className="text-center text-red-500 mt-10">{error}</p>;
+  if (!tienda) return <p className="text-center mt-10">No se encontró la tienda</p>;
 
   return (
-    <div className="detalle-tienda">
-      <div className="detalle-header">
-        <div className="container">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Link
-              to={`/categoria/${encodeURIComponent(tienda.categoria)}`}
-              className="back-button"
-            >
-              <ArrowLeft size={20} />
-              Volver a {tienda.categoria}
-            </Link>
-            <button onClick={compartirTienda} className="back-button">
-              <Share2 size={20} />
-              Compartir
-            </button>
-          </div>
-        </div>
+    <div className="max-w-4xl mx-auto p-6">
+      {/* Botón volver */}
+      <div className="mb-4">
+        <Link
+          to="/"
+          className="inline-flex items-center text-blue-600 hover:underline"
+        >
+          <ArrowLeft className="mr-2" size={18} />
+          Volver al inicio
+        </Link>
       </div>
 
-      <div className="detalle-content">
-        <div className="detalle-card">
-          <div className="detalle-imagenes">
-            {tienda.fotos && tienda.fotos.length > 0 ? (
-              <>
-                <img
-                  src={tienda.fotos[imagenActiva].url}
-                  alt={tienda.nombreEstablecimiento}
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                    e.target.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:4rem;background:linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 100%);">${iconoCategoria(
-                      tienda.categoria
-                    )}</div>`;
-                  }}
-                />
-                {tienda.fotos.length > 1 && (
-                  <div className="imagen-thumbnails">
-                    {tienda.fotos.map((foto, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setImagenActiva(index)}
-                        className={`thumbnail ${index === imagenActiva ? "active" : ""}`}
-                      >
-                        <img
-                          src={foto.url}
-                          alt={`${tienda.nombreEstablecimiento} ${index + 1}`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </>
-            ) : (
-              <div style={{ fontSize: "4rem" }}>
-                {iconoCategoria(tienda.categoria)}
-              </div>
+      {/* Encabezado */}
+      <div className="bg-white shadow-lg rounded-2xl p-6 mb-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          {tienda.nombre}
+        </h1>
+        <p className="text-gray-600">{tienda.descripcion}</p>
+      </div>
+
+      {/* Información */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="bg-white shadow-md rounded-2xl p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Información de contacto
+          </h2>
+          <ul className="space-y-3 text-gray-700">
+            <li className="flex items-center">
+              <MapPin className="mr-3 text-gray-500" size={20} />
+              {tienda.direccion}
+            </li>
+            <li className="flex items-center">
+              <Phone className="mr-3 text-gray-500" size={20} />
+              {tienda.telefono}
+            </li>
+            {tienda.whatsapp && (
+              <li className="flex items-center">
+                <MessageCircle className="mr-3 text-green-500" size={20} />
+                <a
+                  href={`https://wa.me/${tienda.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-600 hover:underline"
+                >
+                  {tienda.whatsapp}
+                </a>
+              </li>
             )}
-          </div>
-
-          <div className="detalle-info">
-            <h1 className="detalle-titulo">{tienda.nombreEstablecimiento}</h1>
-            <p className="detalle-categoria">{tienda.categoria}</p>
-            <p className="detalle-descripcion">{tienda.descripcionVentas}</p>
-
-            <div className="detalle-acciones">
-              <button onClick={abrirWhatsApp} className="accion-btn whatsapp-btn">
-                <MessageCircle size={20} />
-                Contactar por WhatsApp
-              </button>
-
-              <button onClick={abrirMaps} className="accion-btn maps-btn">
-                <MapPin size={20} />
-                Ver ubicación en Maps
-              </button>
-
-              {tienda.paginaWeb && (
-                <button onClick={abrirPaginaWeb} className="accion-btn web-btn">
-                  <Globe size={20} />
-                  Visitar página web
-                </button>
-              )}
-            </div>
-
-            <div className="detalle-info-adicional">
-              <div className="info-item">
-                <MapPin size={20} />
-                <div>
-                  <strong>Dirección:</strong>
-                  <br />
-                  {tienda.direccion}
-                </div>
-              </div>
-
-              <div className="info-item">
-                <Phone size={20} />
-                <div>
-                  <strong>WhatsApp:</strong>
-                  <br />
-                  {tienda.telefonoWhatsapp}
-                </div>
-              </div>
-
-              {tienda.paginaWeb && (
-                <div className="info-item">
-                  <Globe size={20} />
-                  <div>
-                    <strong>Sitio web:</strong>
-                    <br />
-                    <a
-                      href={
-                        tienda.paginaWeb.startsWith("http")
-                          ? tienda.paginaWeb
-                          : `https://${tienda.paginaWeb}`
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: "#3b82f6", textDecoration: "none" }}
-                    >
-                      {tienda.paginaWeb}
-                      <ExternalLink size={14} style={{ marginLeft: "0.25rem", display: "inline" }} />
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {tienda.redesSociales && (
-                <div className="info-item">
-                  <Share2 size={20} />
-                  <div>
-                    <strong>Redes sociales:</strong>
-                    <br />
-                    {tienda.redesSociales}
-                  </div>
-                </div>
-              )}
-
-              <div className="info-item">
-                <Clock size={20} />
-                <div>
-                  <strong>Registrado:</strong>
-                  <br />
-                  {new Date(tienda.fechaCreacion).toLocaleDateString("es-CO", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
+            {tienda.sitioWeb && (
+              <li className="flex items-center">
+                <Globe className="mr-3 text-gray-500" size={20} />
+                <a
+                  href={tienda.sitioWeb}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  {tienda.sitioWeb}
+                </a>
+              </li>
+            )}
+            <li className="flex items-center">
+              <Calendar className="mr-3 text-gray-500" size={20} />
+              Registrado:{" "}
+              {tienda.createdAt
+                ? new Date(tienda.createdAt).toLocaleDateString()
+                : "No disponible"}
+            </li>
+          </ul>
         </div>
-      </div>
 
-      <div
-        style={{
-          background: "#f8fafc",
-          padding: "3rem 0",
-          textAlign: "center",
-          marginTop: "2rem",
-        }}
-      >
-        <div className="container">
-          <h3 style={{ marginBottom: "1rem", color: "#374151" }}>
-            ¿Tienes un negocio como este?
-          </h3>
-          <p style={{ color: "#6b7280", marginBottom: "2rem" }}>
-            Registra tu negocio gratis y conecta con más clientes
-          </p>
-          <Link to="/registro" className="btn-registro">
-            Registrar mi negocio
-          </Link>
+        {/* Mapa */}
+        <div className="bg-white shadow-md rounded-2xl p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Ubicación
+          </h2>
+          {tienda.lat && tienda.lng ? (
+            <iframe
+              title="Mapa de ubicación"
+              src={`https://www.google.com/maps?q=${tienda.lat},${tienda.lng}&hl=es;&output=embed`}
+              width="100%"
+              height="300"
+              allowFullScreen=""
+              loading="lazy"
+              className="rounded-lg"
+            ></iframe>
+          ) : (
+            <p className="text-gray-500">Ubicación no disponible</p>
+          )}
         </div>
       </div>
     </div>
