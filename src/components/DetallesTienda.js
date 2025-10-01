@@ -1,4 +1,3 @@
-// src/components/DetallesTienda.js
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -10,7 +9,6 @@ import {
   Phone,
   Clock,
   ExternalLink,
-  Star,
 } from "lucide-react";
 import axios from "axios";
 
@@ -21,22 +19,18 @@ const DetallesTienda = () => {
   const [error, setError] = useState("");
   const [imagenActiva, setImagenActiva] = useState(0);
 
-  // Estado para reseñas
-  const [reseñas, setReseñas] = useState([]);
-  const [nuevaReseña, setNuevaReseña] = useState({ calificacion: 0, comentario: "" });
-  const [enviando, setEnviando] = useState(false);
-
   useEffect(() => {
     cargarTienda();
-    cargarReseñas();
   }, [id]);
 
   const cargarTienda = async () => {
     try {
       setLoading(true);
+      // 🔹 URL absoluta del backend
       const response = await axios.get(
         `https://tiendasappbackend.onrender.com/api/tiendas/${id}`
       );
+
       if (response.data && response.data._id) {
         setTienda(response.data);
       } else {
@@ -47,41 +41,6 @@ const DetallesTienda = () => {
       setError("Tienda no encontrada");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const cargarReseñas = async () => {
-    try {
-      const response = await axios.get(
-        `https://tiendasappbackend.onrender.com/api/tiendas/${id}/reseñas`
-      );
-      if (Array.isArray(response.data)) {
-        setReseñas(response.data);
-      }
-    } catch (err) {
-      console.error("Error cargando reseñas:", err);
-    }
-  };
-
-  const enviarReseña = async (e) => {
-    e.preventDefault();
-    if (!nuevaReseña.calificacion || nuevaReseña.calificacion < 1) {
-      alert("Debe seleccionar una calificación mínima de 1 estrella");
-      return;
-    }
-    try {
-      setEnviando(true);
-      await axios.post(
-        `https://tiendasappbackend.onrender.com/api/tiendas/${id}/reseñas`,
-        nuevaReseña
-      );
-      setNuevaReseña({ calificacion: 0, comentario: "" });
-      cargarReseñas();
-    } catch (err) {
-      console.error("Error enviando reseña:", err);
-      alert("No se pudo enviar la reseña. Intenta nuevamente.");
-    } finally {
-      setEnviando(false);
     }
   };
 
@@ -189,85 +148,155 @@ const DetallesTienda = () => {
 
   return (
     <div className="detalle-tienda">
-      {/* ... header y detalles de negocio, igual a tu código original ... */}
-
-      <div className="detalle-content">
-        {/* Tarjeta de la tienda, igual a lo que ya tenías */}
-        <div className="detalle-card">
-          {/* ... tu bloque de imágenes e info ... */}
+      <div className="detalle-header">
+        <div className="container">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Link
+              to={`/categoria/${encodeURIComponent(tienda.categoria)}`}
+              className="back-button"
+            >
+              <ArrowLeft size={20} />
+              Volver a {tienda.categoria}
+            </Link>
+            <button onClick={compartirTienda} className="back-button">
+              <Share2 size={20} />
+              Compartir
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* NUEVA SECCIÓN DE RESEÑAS */}
-      <div className="reseñas-section container" style={{ marginTop: "3rem" }}>
-        <h2>Opiniones de clientes</h2>
-
-        {/* Formulario */}
-        <form onSubmit={enviarReseña} className="reseña-form" style={{ marginBottom: "2rem" }}>
-          <div className="calificacion-input" style={{ marginBottom: "1rem" }}>
-            {[1, 2, 3, 4, 5].map((estrella) => (
-              <button
-                type="button"
-                key={estrella}
-                onClick={() => setNuevaReseña((prev) => ({ ...prev, calificacion: estrella }))}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: estrella <= nuevaReseña.calificacion ? "#facc15" : "#d1d5db",
-                  fontSize: "1.5rem",
-                }}
-              >
-                <Star />
-              </button>
-            ))}
+      <div className="detalle-content">
+        <div className="detalle-card">
+          <div className="detalle-imagenes">
+            {tienda.fotos && tienda.fotos.length > 0 ? (
+              <>
+                <img
+                  src={tienda.fotos[imagenActiva].url}
+                  alt={tienda.nombreEstablecimiento}
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    e.target.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:4rem;background:linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 100%);">${iconoCategoria(
+                      tienda.categoria
+                    )}</div>`;
+                  }}
+                />
+                {tienda.fotos.length > 1 && (
+                  <div className="imagen-thumbnails">
+                    {tienda.fotos.map((foto, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setImagenActiva(index)}
+                        className={`thumbnail ${index === imagenActiva ? "active" : ""}`}
+                      >
+                        <img
+                          src={foto.url}
+                          alt={`${tienda.nombreEstablecimiento} ${index + 1}`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div style={{ fontSize: "4rem" }}>
+                {iconoCategoria(tienda.categoria)}
+              </div>
+            )}
           </div>
-          <textarea
-            placeholder="Escribe tu comentario (opcional)"
-            value={nuevaReseña.comentario}
-            onChange={(e) => setNuevaReseña((prev) => ({ ...prev, comentario: e.target.value }))}
-            style={{ width: "100%", padding: "0.5rem", borderRadius: "8px", border: "1px solid #ddd" }}
-          />
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={enviando}
-            style={{ marginTop: "1rem" }}
-          >
-            {enviando ? "Enviando..." : "Enviar reseña"}
-          </button>
-        </form>
 
-        {/* Lista de reseñas */}
-        {reseñas.length === 0 ? (
-          <p>No hay reseñas aún. Sé el primero en opinar.</p>
-        ) : (
-          <ul className="reseñas-list" style={{ listStyle: "none", padding: 0 }}>
-            {reseñas.map((r, index) => (
-              <li
-                key={index}
-                style={{
-                  borderBottom: "1px solid #e5e7eb",
-                  padding: "1rem 0",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", marginBottom: "0.5rem" }}>
-                  {[1, 2, 3, 4, 5].map((estrella) => (
-                    <Star
-                      key={estrella}
-                      size={16}
-                      style={{ marginRight: "2px", color: estrella <= r.calificacion ? "#facc15" : "#d1d5db" }}
-                    />
-                  ))}
+          <div className="detalle-info">
+            <h1 className="detalle-titulo">{tienda.nombreEstablecimiento}</h1>
+            <p className="detalle-categoria">{tienda.categoria}</p>
+            <p className="detalle-descripcion">{tienda.descripcionVentas}</p>
+
+            <div className="detalle-acciones">
+              <button onClick={abrirWhatsApp} className="accion-btn whatsapp-btn">
+                <MessageCircle size={20} />
+                Contactar por WhatsApp
+              </button>
+
+              <button onClick={abrirMaps} className="accion-btn maps-btn">
+                <MapPin size={20} />
+                Ver ubicación en Maps
+              </button>
+
+              {tienda.paginaWeb && (
+                <button onClick={abrirPaginaWeb} className="accion-btn web-btn">
+                  <Globe size={20} />
+                  Visitar página web
+                </button>
+              )}
+            </div>
+
+            <div className="detalle-info-adicional">
+              <div className="info-item">
+                <MapPin size={20} />
+                <div>
+                  <strong>Dirección:</strong>
+                  <br />
+                  {tienda.direccion}
                 </div>
-                <p style={{ margin: 0 }}>{r.comentario || "Sin comentario"}</p>
-                <small style={{ color: "#6b7280" }}>
-                  {new Date(r.fecha).toLocaleDateString("es-CO")}
-                </small>
-              </li>
-            ))}
-          </ul>
-        )}
+              </div>
+
+              <div className="info-item">
+                <Phone size={20} />
+                <div>
+                  <strong>WhatsApp:</strong>
+                  <br />
+                  {tienda.telefonoWhatsapp}
+                </div>
+              </div>
+
+              {tienda.paginaWeb && (
+                <div className="info-item">
+                  <Globe size={20} />
+                  <div>
+                    <strong>Sitio web:</strong>
+                    <br />
+                    <a
+                      href={
+                        tienda.paginaWeb.startsWith("http")
+                          ? tienda.paginaWeb
+                          : `https://${tienda.paginaWeb}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "#3b82f6", textDecoration: "none" }}
+                    >
+                      {tienda.paginaWeb}
+                      <ExternalLink size={14} style={{ marginLeft: "0.25rem", display: "inline" }} />
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {tienda.redesSociales && (
+                <div className="info-item">
+                  <Share2 size={20} />
+                  <div>
+                    <strong>Redes sociales:</strong>
+                    <br />
+                    {tienda.redesSociales}
+                  </div>
+                </div>
+              )}
+
+              <div className="info-item">
+                <Clock size={20} />
+                <div>
+                  <strong>Registrado:</strong>
+                  <br />
+                  {new Date(tienda.fechaCreacion).toLocaleDateString("es-CO", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div
