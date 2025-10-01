@@ -930,15 +930,29 @@ body {
   height: auto; /* Mantiene la proporción */
 }
 /* 🔎 Buscador de negocios */
+/* Ajuste de tamaño para el logo de negocio */
+.logo-negocio {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.logo-negocio img.logo-imagen {
+  width: 20%;
+  max-width: 20%;
+  height: auto;
+}
+
+/* 🔎 Buscador de negocios */
 .buscador-container {
   display: flex;
   justify-content: center;
-  margin: 2rem auto;
+  margin: 3rem auto 2rem; /* más aire alrededor */
   padding: 0 1rem;
   position: sticky;
   top: 0;
   z-index: 50;
-  background: #f8fafc; /* fondo igual que la vista */
+  background: #f8fafc;
 }
 
 .buscador-input {
@@ -947,31 +961,36 @@ body {
   gap: 0.75rem;
   background: #ffffff;
   border: 2px solid #e5e7eb;
-  border-radius: 9999px;
-  padding: 0.85rem 1.5rem;
+  border-radius: 50px; /* más suave que 9999px */
+  padding: 1rem 1.8rem; /* más grande */
   width: 100%;
-  max-width: 600px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: all 0.2s ease-in-out;
+  max-width: 700px; /* más ancho */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease-in-out;
 }
 
 .buscador-input input {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 1.05rem;
+  font-size: 1.15rem; /* texto más grande */
+  font-weight: 500;
   background: transparent;
   color: #1f2937;
 }
 
 .buscador-input input::placeholder {
   color: #9ca3af;
+  font-size: 1.05rem;
 }
 
 .buscador-input:hover,
 .buscador-input:focus-within {
   border-color: #f97316; /* naranja */
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.25);
+  transform: scale(1.02);
 }
+
+ 
 
 
