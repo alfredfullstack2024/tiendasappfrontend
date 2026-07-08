@@ -39,25 +39,42 @@ const CategoriaView = () => {
 
   const iconoCategoria = (categoria) => {
     const iconos = {
-      "Comidas y Restaurantes": "🍽️",
-      "Tecnología y Desarrollo": "💻",
-      Gimnasios: "🏋️",
-      "Papelería y Librerías": "📚",
-      Mascotas: "🐱",
-      Odontología: "🦷",
-      Ópticas: "👓",
-      Pastelerías: "🎂",
-      Pizzerías: "🍕",
-      "Ropa de Niños": "👶",
-      "Ropa de Mujeres": "👗",
-      "Ropa Deportiva": "👟",
-      "Salones de Belleza": "💅",
-      SPA: "🧘",
-      "Talleres de Mecánica": "🚗",
-      "Tiendas Deportivas": "🏆",
-      Veterinarias: "🦴",
-      Vidrierías: "🪟",
-    };
+  "Agricultura y Campo": "🌾",
+  "Almacenes y Supermercados": "🛒",
+  Automotriz: "🚗",
+  Cafeterías: "☕",
+  Clínicas: "🏥",
+  "Comidas y Restaurantes": "🍽️",
+  Consultorías: "📊",
+  "Educación y Capacitación": "🎓",
+  Electrodomésticos: "📺",
+  Ferreterías: "🛠️",
+  Floristerías: "💐",
+  Gimnasios: "🏋️",
+  "Hoteles y Alojamiento": "🏨",
+  Inmobiliarias: "🏠",
+  "Joyería y Accesorios": "💍",
+  Jurídico: "⚖️",
+  "Laboratorios Clínicos": "🧪",
+  Mascotas: "🐶",
+  Odontología: "🦷",
+  Ópticas: "👓",
+  "Papelería y Librerías": "📚",
+  Pastelerías: "🎂",
+  Pizzerías: "🍕",
+  "Ropa de Hombres": "👔",
+  "Ropa de Mujeres": "👗",
+  "Ropa de Niños": "👶",
+  "Ropa Deportiva": "👟",
+  "Salones de Belleza": "💅",
+  SPA: "🧘",
+  Seguridad: "🛡️",
+  "Tecnología y Desarrollo": "💻",
+  "Tiendas Deportivas": "🏆",
+  "Talleres de Mecánica": "🔧",
+  Veterinarias: "🦴",
+  Vidrierías: "🪟",
+};
     return iconos[categoria] || "🏪";
   };
 
@@ -68,9 +85,11 @@ const CategoriaView = () => {
   const tiendasFiltradas = tiendas.filter((tienda) => {
     const termino = busqueda.toLowerCase();
     return (
-      tienda.nombreEstablecimiento?.toLowerCase().includes(termino) ||
-      tienda.descripcionVentas?.toLowerCase().includes(termino)
-    );
+  tienda.nombreEstablecimiento?.toLowerCase().includes(termino) ||
+  tienda.descripcionVentas?.toLowerCase().includes(termino) ||
+  tienda.direccion?.toLowerCase().includes(termino) ||
+  tienda.ciudad?.toLowerCase().includes(termino)
+);
   });
 
   if (loading) {
@@ -120,10 +139,22 @@ const CategoriaView = () => {
             Volver al menú
           </Link>
           <div className="categoria-title">
-            <span>{iconoCategoria(categoria)}</span>
+            <div
+  style={{
+    fontSize: "4rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
+  }}
+>
+  {iconoCategoria(tienda.categoria)}
+</div>
             {categoria}
           </div>
           <p className="categoria-subtitle">
+{tiendas.length} {tiendas.length === 1 ? "negocio encontrado" : "negocios encontrados"} en esta categoría
+</p>
             {tiendas.length}{" "}
             {tiendas.length === 1 ? "negocio encontrado" : "negocios encontrados"}
           </p>
@@ -174,17 +205,31 @@ const CategoriaView = () => {
 
                 <div className="tienda-card-content">
                   <h3 className="tienda-nombre">
-                    {tienda.nombreEstablecimiento}
-                  </h3>
+  {tienda.nombreEstablecimiento}
+</h3>
+
+<p
+  style={{
+    color: "#2563eb",
+    fontWeight: "600",
+    marginBottom: "8px",
+  }}
+>
+  {iconoCategoria(tienda.categoria)} {tienda.categoria}
+</p>
                   <p className="tienda-descripcion">
                     {truncarTexto(tienda.descripcionVentas)}
                   </p>
 
                   <div className="tienda-info-adicional">
                     <div className="info-item">
-                      <MapPin size={16} />
-                      <span>{truncarTexto(tienda.direccion, 50)}</span>
-                    </div>
+  <MapPin size={16} />
+  <span>
+    <strong>{tienda.ciudad}</strong>
+    <br />
+    {truncarTexto(tienda.direccion, 50)}
+  </span>
+</div>
                   </div>
 
                   <div className="tienda-acciones">
@@ -214,7 +259,7 @@ const CategoriaView = () => {
         >
           <div className="container">
             <h3 style={{ marginBottom: "1rem", color: "#374151" }}>
-              ¿Tienes un negocio en {categoria}?
+              ¿Tienes un negocio de {categoria}?
             </h3>
             <p style={{ color: "#6b7280", marginBottom: "2rem" }}>
               Únete a nuestra comunidad de negocios locales
