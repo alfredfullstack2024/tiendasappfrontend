@@ -178,32 +178,35 @@ const CategoriaView = () => {
           <div className="tiendas-grid">
             {tiendasFiltradas.map((tienda) => (
               <div key={tienda._id} className="tienda-card">
-                <div className="tienda-card-image">
-                 {tienda.fotos && tienda.fotos.length > 0 ? (
-  <img
-    src={tienda.fotos[0].url}
-    alt={tienda.nombreEstablecimiento}
-    onError={(e) => {
-      e.target.style.display = "none";
-      e.target.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:3rem;">${iconoCategoria(
-        categoria
-      )}</div>`;
-    }}
-  />
-) : (
+                // Sustituye tu bloque actual de <div className="tienda-card-image"> por esto:
+
+<div className="tienda-card-image">
+  {tienda.fotos && tienda.fotos.length > 0 ? (
+    <img
+      src={tienda.fotos[0].url}
+      alt={tienda.nombreEstablecimiento}
+      // Usamos una función simple para ocultar la imagen si falla
+      onError={(e) => {
+        e.target.style.display = "none";
+        e.target.nextSibling.style.display = "flex"; // Asumiendo que el div de respaldo es el siguiente
+      }}
+    />
+  ) : null}
+  
+  {/* Div de respaldo siempre presente pero oculto si hay foto */}
   <div
     style={{
-      display: "flex",
+      display: (tienda.fotos && tienda.fotos.length > 0) ? "none" : "flex",
       alignItems: "center",
       justifyContent: "center",
       width: "100%",
-      height: "100%",
+      height: "200px", // Ajusta según tu CSS
       fontSize: "3rem",
+      backgroundColor: "#f3f4f6"
     }}
   >
     {iconoCategoria(tienda.categoria)}
   </div>
-)}
 </div>
 
 <div className="tienda-card-content">
