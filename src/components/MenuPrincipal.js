@@ -129,11 +129,10 @@ const buscarCategoria = () => {
   return (
     <div className="menu-principal">
 
-    <header
+   <header
   style={{
     width: "100%",
     background: "#fff",
-    textAlign: "center", // Centra la imagen horizontalmente
   }}
 >
   <img
@@ -141,9 +140,7 @@ const buscarCategoria = () => {
     alt="TiendasApp"
     style={{
       width: "100%",
-      maxHeight: "250px", // Ajusta este valor según prefieras (ej. 200px a 300px)
-      objectFit: "contain",
-      objectPosition: "center",
+      height: "auto", // Esto mantiene la proporción original y permite que crezca según el ancho
       display: "block",
     }}
   />
