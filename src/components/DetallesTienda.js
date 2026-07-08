@@ -95,8 +95,14 @@ const DetallesTienda = () => {
   };
 
   const abrirMaps = () => {
-    const direccion = encodeURIComponent(tienda.direccion);
-    window.open(`https://www.google.com/maps/search/?api=1&query=${direccion}`, "_blank");
+    // Concatenamos la dirección y la ciudad para darle contexto a Google Maps
+    const busqueda = `${tienda.direccion}, ${tienda.ciudad}, Colombia`;
+    const direccionCodificada = encodeURIComponent(busqueda);
+    
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${direccionCodificada}`,
+      "_blank"
+    );
   };
 
   const abrirPaginaWeb = () => {
