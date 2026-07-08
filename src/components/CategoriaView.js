@@ -179,33 +179,34 @@ const CategoriaView = () => {
             {tiendasFiltradas.map((tienda) => (
               <div key={tienda._id} className="tienda-card">
                 <div className="tienda-card-image">
-                  {tienda.fotos && tienda.fotos.length > 0 ? (
-                    <img
-                      src={tienda.fotos[0].url}
-                      alt={tienda.nombreEstablecimiento}
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                        e.target.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:3rem;">${iconoCategoria(
-                          categoria
-                        )}</div>`;
-                      }}
-                    />
-                  ) : (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: "100%",
-        fontSize: "3rem",
-      }}
-    >
-      {iconoCategoria(tienda.categoria)}
-    </div>
+                 {tienda.fotos && tienda.fotos.length > 0 ? (
+  <img
+    src={tienda.fotos[0].url}
+    alt={tienda.nombreEstablecimiento}
+    onError={(e) => {
+      e.target.style.display = "none";
+      e.target.parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:3rem;">${iconoCategoria(
+        categoria
+      )}</div>`;
+    }}
+  />
+) : (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%",
+      fontSize: "3rem",
+    }}
+  >
+    {iconoCategoria(tienda.categoria)}
+  </div>
 )}
-                  
-                <div className="tienda-card-content">
+</div>
+
+<div className="tienda-card-content">
                   <h3 className="tienda-nombre">
   {tienda.nombreEstablecimiento}
 </h3>
