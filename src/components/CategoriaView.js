@@ -139,25 +139,18 @@ const CategoriaView = () => {
             Volver al menú
           </Link>
           <div className="categoria-title">
-            <div
-  style={{
-    fontSize: "4rem",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100%",
-  }}
->
+            
   {iconoCategoria(tienda.categoria)}
 </div>
             {categoria}
           </div>
           <p className="categoria-subtitle">
-{tiendas.length} {tiendas.length === 1 ? "negocio encontrado" : "negocios encontrados"} en esta categoría
+  {tiendas.length}{" "}
+  {tiendas.length === 1
+    ? "negocio encontrado"
+    : "negocios encontrados"}{" "}
+  en esta categoría
 </p>
-            {tiendas.length}{" "}
-            {tiendas.length === 1 ? "negocio encontrado" : "negocios encontrados"}
-          </p>
         </div>
       </div>
 
@@ -199,10 +192,20 @@ const CategoriaView = () => {
                       }}
                     />
                   ) : (
-                    <span>{iconoCategoria(categoria)}</span>
-                  )}
-                </div>
-
+                    <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%",
+      fontSize: "3rem",
+    }}
+  >
+    {iconoCategoria(tienda.categoria)}
+  </div>
+)
+                  
                 <div className="tienda-card-content">
                   <h3 className="tienda-nombre">
   {tienda.nombreEstablecimiento}
