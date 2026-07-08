@@ -27,26 +27,43 @@ const MenuPrincipal = () => {
     } catch (error) {
       console.error('Error cargando categorías:', error);
       // Categorías por defecto si el backend falla
-      setCategorias([
-        'Comidas y Restaurantes',
-        'Tecnología y Desarrollo',
-        'Gimnasios',
-        'Papelería y Librerías',
-        'Mascotas',
-        'Odontología',
-        'Ópticas',
-        'Pastelerías',
-        'Pizzerías',
-        'Ropa de Niños',
-        'Ropa de Mujeres',
-        'Ropa Deportiva',
-        'Salones de Belleza',
-        'SPA',
-        'Talleres de Mecánica',
-        'Tiendas Deportivas',
-        'Veterinarias',
-        'Vidrierías'
-      ]);
+     setCategorias([
+  "Agricultura y Campo",
+  "Almacenes y Supermercados",
+  "Automotriz",
+  "Cafeterías",
+  "Clínicas",
+  "Comidas y Restaurantes",
+  "Consultorías",
+  "Educación y Capacitación",
+  "Electrodomésticos",
+  "Ferreterías",
+  "Floristerías",
+  "Gimnasios",
+  "Hoteles y Alojamiento",
+  "Inmobiliarias",
+  "Joyería y Accesorios",
+  "Jurídico",
+  "Laboratorios Clínicos",
+  "Mascotas",
+  "Odontología",
+  "Ópticas",
+  "Papelería y Librerías",
+  "Pastelerías",
+  "Pizzerías",
+  "Ropa de Hombres",
+  "Ropa de Mujeres",
+  "Ropa de Niños",
+  "Ropa Deportiva",
+  "Salones de Belleza",
+  "SPA",
+  "Seguridad",
+  "Tecnología y Desarrollo",
+  "Tiendas Deportivas",
+  "Talleres de Mecánica",
+  "Veterinarias",
+  "Vidrierías"
+]);
     } finally {
       setLoading(false);
     }
@@ -54,25 +71,42 @@ const MenuPrincipal = () => {
 
   const iconoCategoria = (categoria) => {
     const iconos = {
-      'Comidas y Restaurantes': '🍽️',
-      'Tecnología y Desarrollo': '💻',
-      'Gimnasios': '🏋️',
-      'Papelería y Librerías': '📚',
-      'Mascotas': '🐱',
-      'Odontología': '🦷',
-      'Ópticas': '👓',
-      'Pastelerías': '🎂',
-      'Pizzerías': '🍕',
-      'Ropa de Niños': '👶',
-      'Ropa de Mujeres': '👗',
-      'Ropa Deportiva': '👟',
-      'Salones de Belleza': '💅',
-      'SPA': '🧘',
-      'Talleres de Mecánica': '🚗',
-      'Tiendas Deportivas': '🏆',
-      'Veterinarias': '🦴',
-      'Vidrierías': '🪟'
-    };
+  "Agricultura y Campo": "🌾",
+  "Almacenes y Supermercados": "🛒",
+  Automotriz: "🚗",
+  Cafeterías: "☕",
+  Clínicas: "🏥",
+  "Comidas y Restaurantes": "🍽️",
+  Consultorías: "📊",
+  "Educación y Capacitación": "🎓",
+  Electrodomésticos: "📺",
+  Ferreterías: "🛠️",
+  Floristerías: "💐",
+  Gimnasios: "🏋️",
+  "Hoteles y Alojamiento": "🏨",
+  Inmobiliarias: "🏠",
+  "Joyería y Accesorios": "💍",
+  Jurídico: "⚖️",
+  "Laboratorios Clínicos": "🧪",
+  Mascotas: "🐶",
+  Odontología: "🦷",
+  Ópticas: "👓",
+  "Papelería y Librerías": "📚",
+  Pastelerías: "🎂",
+  Pizzerías: "🍕",
+  "Ropa de Hombres": "👔",
+  "Ropa de Mujeres": "👗",
+  "Ropa de Niños": "👶",
+  "Ropa Deportiva": "👟",
+  "Salones de Belleza": "💅",
+  SPA: "🧘",
+  Seguridad: "🛡️",
+  "Tecnología y Desarrollo": "💻",
+  "Tiendas Deportivas": "🏆",
+  "Talleres de Mecánica": "🔧",
+  Veterinarias: "🦴",
+  Vidrierías: "🪟",
+};
     return iconos[categoria] || '🏪';
   };
 
@@ -104,12 +138,27 @@ const MenuPrincipal = () => {
               }}
             />
           </div>
-          <p className="subtitle">Directorio Local de Negocios</p>
+          <p className="subtitle">Directorio Virtual de Negocios</p>
         </div>
       </header>
 
       <section className="hero">
         <div className="hero-content">
+                <div
+    style={{
+        background:"#eff6ff",
+        padding:"15px",
+        borderRadius:"12px",
+        marginTop:"30px",
+        textAlign:"center"
+    }}
+>
+    <strong>📍 Ciudades disponibles:</strong>
+
+    <br/><br/>
+
+    Zipaquirá • Chía • Cajicá • Cota
+</div>
           <h2>Encuentra los mejores negocios locales</h2>
           <p>Descubre tiendas, restaurantes y servicios cerca de ti</p>
           <div className="hero-actions">
