@@ -215,11 +215,6 @@ const buscarCategoria = () => {
 </div>
 
 <div className="hero-actions">
-  <Link to="/registro" className="btn-registro">
-    <Plus size={20} />
-    Registra tu tienda aquí
-  </Link>
-</div>
             <Link to="/registro" className="btn-registro">
               <Plus size={20} />
               Registra tu tienda aquí
