@@ -132,7 +132,8 @@ const buscarCategoria = () => {
    <header
   style={{
     width: "100%",
-    background: "#fff",
+    height: "250px", // Define aquí la altura exacta que quieres que tenga
+    overflow: "hidden", // Esto oculta lo que sobrepase la altura
   }}
 >
   <img
@@ -140,7 +141,9 @@ const buscarCategoria = () => {
     alt="TiendasApp"
     style={{
       width: "100%",
-      height: "auto", // Esto mantiene la proporción original y permite que crezca según el ancho
+      height: "100%",
+      objectFit: "cover", // Esto centra y recorta la imagen automáticamente
+      objectPosition: "center",
       display: "block",
     }}
   />
