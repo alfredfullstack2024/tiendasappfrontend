@@ -288,7 +288,7 @@ Estoy interesado en conocer más sobre ${tienda.nombreEstablecimiento}.`;
 📍 {tienda.ciudad}
 </p>
     {tienda.nombreEstablecimiento}
-</h1>
+
 
 <div
     style={{
