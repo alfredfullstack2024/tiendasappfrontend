@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Store, Plus, Search, Download } from 'lucide-react';
+import superior from "../superior.png";
 import axios from 'axios';
+
 
 const MenuPrincipal = () => {
   const [categorias, setCategorias] = useState([]);
@@ -127,26 +129,23 @@ const buscarCategoria = () => {
 
   return (
     <div className="menu-principal">
-      <header className="header">
-        <div className="header-content">
-          <div className="logo">
-            <Store size={32} />
-            <h1>TiendasApp</h1>
-          </div>
-          <div className="logo-negocio">
-            <img
-              src="https://raw.githubusercontent.com/alfredfullstack2024/alfredfullstack.com/main/images/logo%20fin%2017-05-2016.png"
-              alt="Alfred FullStack Logo"
-              className="logo-imagen"
-              onError={(e) => {
-                console.error('Error cargando logo:', e);
-                e.target.style.display = 'none';
-              }}
-            />
-          </div>
-          <p className="subtitle">Directorio Virtual de Negocios</p>
-        </div>
-      </header>
+      <header
+  style={{
+    width: "100%",
+    overflow: "hidden",
+    background: "#fff",
+  }}
+>
+  <img
+    src="https://raw.githubusercontent.com/alfredfullstack2024/tiendasappfrontend/main/src/superior.png"
+    alt="TiendasApp"
+    style={{
+      width: "100%",
+      display: "block",
+      objectFit: "cover",
+    }}
+  />
+</header>
 
       <section className="hero">
         <div className="hero-content">
