@@ -9,6 +9,7 @@ const CategoriaView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [busqueda, setBusqueda] = useState("");
+  const [ciudadSeleccionada, setCiudadSeleccionada] = useState("Todas");
 
   const cargarTiendas = useCallback(async () => {
     try {
@@ -55,14 +56,19 @@ const CategoriaView = () => {
     texto?.length <= limite ? texto : texto?.substring(0, limite) + "...";
 
   const tiendasFiltradas = tiendas.filter((tienda) => {
-    const termino = busqueda.toLowerCase();
-    return (
-      tienda.nombreEstablecimiento?.toLowerCase().includes(termino) ||
-      tienda.descripcionVentas?.toLowerCase().includes(termino) ||
-      tienda.direccion?.toLowerCase().includes(termino) ||
-      tienda.ciudad?.toLowerCase().includes(termino)
-    );
-  });
+  const termino = busqueda.toLowerCase();
+
+  const coincideBusqueda =
+    tienda.nombreEstablecimiento?.toLowerCase().includes(termino) ||
+    tienda.descripcionVentas?.toLowerCase().includes(termino) ||
+    tienda.direccion?.toLowerCase().includes(termino);
+
+  const coincideCiudad =
+    ciudadSeleccionada === "Todas" ||
+    tienda.ciudad === ciudadSeleccionada;
+
+  return coincideBusqueda && coincideCiudad;
+});
 
   if (loading) return <div className="loading-container"><div className="loading-spinner"></div><p>Cargando tiendas...</p></div>;
 
@@ -77,7 +83,33 @@ const CategoriaView = () => {
           {tiendas.length} {tiendas.length === 1 ? "negocio encontrado" : "negocios encontrados"} en esta categoría
         </p>
       </div>
-
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "30px",
+    marginBottom: "15px",
+  }}
+>
+  <select
+    value={ciudadSeleccionada}
+    onChange={(e) => setCiudadSeleccionada(e.target.value)}
+    style={{
+      width: "260px",
+      padding: "12px",
+      borderRadius: "12px",
+      border: "1px solid #d1d5db",
+      fontSize: "16px",
+      background: "white",
+    }}
+  >
+    <option value="Todas">📍 Todas las ciudades</option>
+    <option value="Zipaquirá">Zipaquirá</option>
+    <option value="Chía">Chía</option>
+    <option value="Cajicá">Cajicá</option>
+    <option value="Cota">Cota</option>
+  </select>
+</div>
       <div className="buscador-container">
         <div className="buscador-input">
           <Search size={20} color="#6b7280" />
