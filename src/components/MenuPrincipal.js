@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Store, Plus, Search } from 'lucide-react';
 import axios from 'axios';
 
 const MenuPrincipal = () => {
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
+const navigate = useNavigate();
 
+const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   useEffect(() => {
     cargarCategorias();
   }, []);
@@ -109,7 +111,11 @@ const MenuPrincipal = () => {
 };
     return iconos[categoria] || '🏪';
   };
+const buscarCategoria = () => {
+  if (!categoriaSeleccionada) return;
 
+  navigate(`/categoria/${encodeURIComponent(categoriaSeleccionada)}`);
+};
   if (loading) {
     return (
       <div className="loading-container">
@@ -159,9 +165,61 @@ const MenuPrincipal = () => {
 
     Zipaquirá • Chía • Cajicá • Cota
 </div>
-          <h2>Encuentra los mejores negocios locales</h2>
-          <p>Descubre tiendas, restaurantes y servicios cerca de ti</p>
-          <div className="hero-actions">
+         <h2>Encuentra los mejores negocios locales</h2>
+<p>Descubre tiendas, restaurantes y servicios cerca de ti</p>
+
+<div
+  style={{
+    display: "flex",
+    gap: "10px",
+    justifyContent: "center",
+    alignItems: "center",
+    flexWrap: "wrap",
+    marginTop: "25px",
+    marginBottom: "25px",
+  }}
+>
+  <select
+    value={categoriaSeleccionada}
+    onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+    style={{
+      padding: "12px",
+      borderRadius: "8px",
+      minWidth: "320px",
+      fontSize: "16px",
+    }}
+  >
+    <option value="">Selecciona una categoría</option>
+
+    {categorias.map((categoria) => (
+      <option key={categoria} value={categoria}>
+        {iconoCategoria(categoria)} {categoria}
+      </option>
+    ))}
+  </select>
+
+  <button
+    onClick={buscarCategoria}
+    style={{
+      background: "#2563eb",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      padding: "12px 24px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    Buscar
+  </button>
+</div>
+
+<div className="hero-actions">
+  <Link to="/registro" className="btn-registro">
+    <Plus size={20} />
+    Registra tu tienda aquí
+  </Link>
+</div>
             <Link to="/registro" className="btn-registro">
               <Plus size={20} />
               Registra tu tienda aquí
