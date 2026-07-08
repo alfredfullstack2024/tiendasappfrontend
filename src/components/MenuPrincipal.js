@@ -132,8 +132,6 @@ const buscarCategoria = () => {
     <header
   style={{
     width: "100%",
-    height: "340px",   // <-- prueba entre 250 y 400
-    overflow: "hidden",
     background: "#fff",
   }}
 >
@@ -143,7 +141,7 @@ const buscarCategoria = () => {
     style={{
       width: "100%",
       height: "100%",
-      objectFit: "cover",
+      objectFit: "contain",
       objectPosition: "center",
       display: "block",
     }}
