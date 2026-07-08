@@ -10,15 +10,16 @@ const RegistroTienda = () => {
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
 
-  const [formData, setFormData] = useState({
-    nombreEstablecimiento: "",
-    direccion: "",
-    categoria: "",
-    telefonoWhatsapp: "",
-    descripcionVentas: "",
-    paginaWeb: "",
-    redesSociales: "",
-  });
+const [formData, setFormData] = useState({
+  nombreEstablecimiento: "",
+  ciudad: "Zipaquirá",
+  direccion: "",
+  categoria: "",
+  telefonoWhatsapp: "",
+  descripcionVentas: "",
+  paginaWeb: "",
+  redesSociales: "",
+});
 
   const [archivos, setArchivos] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
@@ -75,12 +76,12 @@ const RegistroTienda = () => {
   const validarFormulario = () => {
     const {
       nombreEstablecimiento,
+      ciudad,
       direccion,
       categoria,
       telefonoWhatsapp,
       descripcionVentas,
-    } = formData;
-
+} = formData;
     if (!nombreEstablecimiento.trim()) {
       mostrarMensaje("El nombre del establecimiento es obligatorio", "error");
       return false;
@@ -93,6 +94,10 @@ const RegistroTienda = () => {
       mostrarMensaje("Debe seleccionar una categoría", "error");
       return false;
     }
+    if (!ciudad) {
+  mostrarMensaje("Debe seleccionar una ciudad", "error");
+  return false;
+}
     if (!telefonoWhatsapp.trim()) {
       mostrarMensaje("El teléfono de WhatsApp es obligatorio", "error");
       return false;
@@ -142,14 +147,15 @@ const RegistroTienda = () => {
 
       mostrarMensaje("¡Tienda registrada exitosamente!", "success");
       setFormData({
-        nombreEstablecimiento: "",
-        direccion: "",
-        categoria: "",
-        telefonoWhatsapp: "",
-        descripcionVentas: "",
-        paginaWeb: "",
-        redesSociales: "",
-      });
+  nombreEstablecimiento: "",
+  ciudad: "Zipaquirá",
+  direccion: "",
+  categoria: "",
+  telefonoWhatsapp: "",
+  descripcionVentas: "",
+  paginaWeb: "",
+  redesSociales: "",
+});
       setArchivos([]);
       setPreviewImages([]);
 
@@ -220,7 +226,35 @@ const RegistroTienda = () => {
               />
             </div>
           </div>
+<div className="form-row">
 
+  <div className="form-group">
+
+    <label htmlFor="ciudad">
+      Ciudad *
+    </label>
+
+    <select
+      id="ciudad"
+      name="ciudad"
+      value={formData.ciudad}
+      onChange={handleInputChange}
+      required
+    >
+
+      <option value="Zipaquirá">Zipaquirá</option>
+
+      <option value="Chía">Chía</option>
+
+      <option value="Cajicá">Cajicá</option>
+
+      <option value="Cota">Cota</option>
+
+    </select>
+
+  </div>
+
+</div>
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="categoria">Categoría *</label>
@@ -256,7 +290,7 @@ const RegistroTienda = () => {
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="descripcionVentas">
-                Descripción de tus productos/servicios *
+                Describe tus productos o servicios, promociones, horarios y todo lo que quieras que los clientes conozcan.
               </label>
               <textarea
                 id="descripcionVentas"
@@ -311,7 +345,7 @@ const RegistroTienda = () => {
 
           <div className="form-actions">
             <button type="submit" disabled={loading} className="btn-submit">
-              {loading ? "Registrando..." : "Registrar mi tienda"}
+              {loading ? "Registrando..." : "Registrar mi negocio gratis"}
             </button>
           </div>
         </form>
