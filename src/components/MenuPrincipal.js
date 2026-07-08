@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Store, Plus, Search } from 'lucide-react';
+import { Store, Plus, Search, Download } from 'lucide-react';
 import axios from 'axios';
 
 const MenuPrincipal = () => {
@@ -214,13 +214,54 @@ const buscarCategoria = () => {
   </button>
 </div>
 
-<div className="hero-actions">
-            <Link to="/registro" className="btn-registro">
-              <Plus size={20} />
-              Registra tu tienda aquí
-            </Link>
-          </div>
-        </div>
+<div
+  className="hero-actions"
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    gap: "15px",
+    flexWrap: "wrap",
+    marginTop: "20px",
+  }}
+>
+  <Link to="/registro" className="btn-registro">
+    <Plus size={20} />
+    Registra tu tienda aquí
+  </Link>
+
+  <a
+    href="https://drive.google.com/uc?export=download&id=16Go2d7tnSAFC61XyooPwcN5iF_0HS43M"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      background: "#16a34a",
+      color: "#fff",
+      textDecoration: "none",
+      padding: "14px 24px",
+      borderRadius: "10px",
+      fontWeight: "bold",
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      boxShadow: "0 4px 12px rgba(0,0,0,.2)",
+    }}
+  >
+    <Download size={20} />
+    📲 Descarga aquí la App para Android
+  </a>
+</div>
+    
+    <p
+  style={{
+    marginTop: "18px",
+    color: "#ffffff",
+    fontSize: "15px",
+    fontWeight: "500",
+  }}
+>
+  Disponible para teléfonos Android. Instálala gratis y encuentra negocios cerca de ti.
+</p>
+    </div>
       </section>
 
       <section className="categorias-section">
