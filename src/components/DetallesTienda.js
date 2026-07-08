@@ -47,31 +47,53 @@ const DetallesTienda = () => {
 
   const iconoCategoria = (categoria) => {
     const iconos = {
-      "Comidas y Restaurantes": "🍽️",
-      "Tecnología y Desarrollo": "💻",
-      Gimnasios: "🏋️",
-      "Papelería y Librerías": "📚",
-      Mascotas: "🐱",
-      Odontología: "🦷",
-      Ópticas: "👓",
-      Pastelerías: "🎂",
-      Pizzerías: "🍕",
-      "Ropa de Niños": "👶",
-      "Ropa de Mujeres": "👗",
-      "Ropa Deportiva": "👟",
-      "Salones de Belleza": "💅",
-      SPA: "🧘",
-      "Talleres de Mecánica": "🚗",
-      "Tiendas Deportivas": "🏆",
-      Veterinarias: "🦴",
-      Vidrierías: "🪟",
-    };
+  "Agricultura y Campo": "🌾",
+  "Almacenes y Supermercados": "🛒",
+  Automotriz: "🚗",
+  Cafeterías: "☕",
+  Clínicas: "🏥",
+  "Comidas y Restaurantes": "🍽️",
+  Consultorías: "📊",
+  "Educación y Capacitación": "🎓",
+  Electrodomésticos: "📺",
+  Ferreterías: "🛠️",
+  Floristerías: "💐",
+  Gimnasios: "🏋️",
+  "Hoteles y Alojamiento": "🏨",
+  Inmobiliarias: "🏠",
+  "Joyería y Accesorios": "💍",
+  Jurídico: "⚖️",
+  "Laboratorios Clínicos": "🧪",
+  Mascotas: "🐶",
+  Odontología: "🦷",
+  Ópticas: "👓",
+  "Papelería y Librerías": "📚",
+  Pastelerías: "🎂",
+  Pizzerías: "🍕",
+  "Ropa de Hombres": "👔",
+  "Ropa de Mujeres": "👗",
+  "Ropa de Niños": "👶",
+  "Ropa Deportiva": "👟",
+  "Salones de Belleza": "💅",
+  SPA: "🧘",
+  Seguridad: "🛡️",
+  "Tecnología y Desarrollo": "💻",
+  "Tiendas Deportivas": "🏆",
+  "Talleres de Mecánica": "🔧",
+  Veterinarias: "🦴",
+  Vidrierías: "🪟",
+};
     return iconos[categoria] || "🏪";
   };
 
   const abrirWhatsApp = () => {
     const telefono = tienda.telefonoWhatsapp.replace(/\D/g, "");
-    const mensaje = `Hola! Estás siendo contactado por TIENDASAPP. Me interesa conocer más sobre ${tienda.nombreEstablecimiento}.`;
+    const mensaje =
+`Hola 👋
+
+Te encontré en TiendasApp.
+
+Estoy interesado en conocer más sobre ${tienda.nombreEstablecimiento}.`;
     window.open(
       `https://wa.me/57${telefono}?text=${encodeURIComponent(mensaje)}`,
       "_blank"
@@ -97,7 +119,7 @@ const DetallesTienda = () => {
   const compartirTienda = async () => {
     const url = window.location.href;
     const titulo = `${tienda.nombreEstablecimiento} - TiendasApp`;
-    const texto = `Descubre ${tienda.nombreEstablecimiento} en TiendasApp`;
+    const texto = `Descubre ${tienda.nombreEstablecimiento} en ${tienda.ciudad} mediante TiendasApp`;
 
     if (navigator.share) {
       try {
@@ -255,8 +277,32 @@ const DetallesTienda = () => {
           )}
 
           <div className="detalle-info">
-            <h1 className="detalle-titulo">{tienda.nombreEstablecimiento}</h1>
-            <p className="detalle-categoria">{tienda.categoria}</p>
+            <p
+    style={{
+        color:"#6b7280",
+        fontWeight:"600",
+        marginTop:"8px",
+        marginBottom:"15px"
+    }}
+>
+📍 {tienda.ciudad}
+</p>
+    {tienda.nombreEstablecimiento}
+</h1>
+
+<div
+    style={{
+        display: "inline-block",
+        background: "#2563eb",
+        color: "white",
+        padding: "6px 14px",
+        borderRadius: "20px",
+        fontWeight: "600",
+        marginBottom: "15px"
+    }}
+>
+    {iconoCategoria(tienda.categoria)} {tienda.categoria}
+</div>
             <p className="detalle-descripcion">{tienda.descripcionVentas}</p>
 
             <div className="detalle-acciones">
@@ -280,20 +326,38 @@ const DetallesTienda = () => {
 
             <div className="detalle-info-adicional">
               <div className="info-item">
-                <MapPin size={20} />
-                <div>
-                  <strong>Dirección:</strong>
-                  <br />
-                  {tienda.direccion}
-                </div>
-              </div>
+  <MapPin size={20} />
+  <div>
+    <strong>Ciudad:</strong>
+    <br />
+    {tienda.ciudad}
+
+    <br />
+    <br />
+
+    <strong>Dirección:</strong>
+    <br />
+    {tienda.direccion}
+  </div>
+</div>
 
               <div className="info-item">
                 <Phone size={20} />
                 <div>
                   <strong>WhatsApp:</strong>
                   <br />
-                  {tienda.telefonoWhatsapp}
+                  <a
+    href={`https://wa.me/57${tienda.telefonoWhatsapp.replace(/\D/g, "")}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+        color: "#16a34a",
+        textDecoration: "none",
+        fontWeight: "600"
+    }}
+>
+    {tienda.telefonoWhatsapp}
+</a>
                 </div>
               </div>
 
