@@ -138,11 +138,10 @@ const CategoriaView = () => {
             <ArrowLeft size={20} />
             Volver al menú
           </Link>
-          <div className="categoria-title">
-            
-  {iconoCategoria(tienda.categoria)}
+        <div className="categoria-title">
+  <span>{iconoCategoria(categoria)}</span>
+  {categoria}
 </div>
-            {categoria}
           </div>
           <p className="categoria-subtitle">
   {tiendas.length}{" "}
@@ -192,19 +191,19 @@ const CategoriaView = () => {
                       }}
                     />
                   ) : (
-                    <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "100%",
-      height: "100%",
-      fontSize: "3rem",
-    }}
-  >
-    {iconoCategoria(tienda.categoria)}
-  </div>
-)
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        height: "100%",
+        fontSize: "3rem",
+      }}
+    >
+      {iconoCategoria(tienda.categoria)}
+    </div>
+)}
                   
                 <div className="tienda-card-content">
                   <h3 className="tienda-nombre">
