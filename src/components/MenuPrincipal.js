@@ -161,7 +161,7 @@ const buscarCategoria = () => {
 
     <br/><br/>
 
-    Zipaquirá • Chía • Cajicá • Cota
+    Zipaquirá • Chía • Cajicá • Cota  • Chinchina
 </div>
          <h2>Encuentra los mejores negocios locales</h2>
 <p>Descubre tiendas, restaurantes y servicios cerca de ti</p>
