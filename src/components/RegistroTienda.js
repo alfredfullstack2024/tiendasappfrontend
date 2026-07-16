@@ -250,6 +250,8 @@ const [formData, setFormData] = useState({
 
       <option value="Cota">Cota</option>
 
+        <option value="Chinchina">Chinchina</option>
+
     </select>
 
   </div>
