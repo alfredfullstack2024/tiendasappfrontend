@@ -108,6 +108,7 @@ const CategoriaView = () => {
     <option value="Chía">Chía</option>
     <option value="Cajicá">Cajicá</option>
     <option value="Cota">Cota</option>
+    <option value="Chinchina">Chinchina</option>
   </select>
 </div>
       <div className="buscador-container">
