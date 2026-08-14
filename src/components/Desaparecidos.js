@@ -560,53 +560,37 @@ const Desaparecidos = () => {
                           "0 3px 12px rgba(0,0,0,.08)",
                       }}
                     >
-                      {/* FOTO */}
+                     {/* FOTO */}
 
-                      <div
-                        style={{
-                          width:
-                            "100%",
-                          height:
-                            "300px",
-                          background:
-                            "#e2e8f0",
-                          display:
-                            "flex",
-                          alignItems:
-                            "center",
-                          justifyContent:
-                            "center",
-                          overflow:
-                            "hidden",
-                        }}
-                      >
-                        {persona
-                          .foto?.url ? (
-                          <img
-                            src={
-                              persona
-                                .foto
-                                .url
-                            }
-                            alt={
-                              persona.nombre
-                            }
-                            style={{
-                              width:
-                                "100%",
-                              height:
-                                "100%",
-                              objectFit:
-                                "cover",
-                            }}
-                          />
-                        ) : (
-                          <Search
-                            size={80}
-                            color="#94a3b8"
-                          />
-                        )}
-                      </div>
+<div
+  style={{
+    width: "100%",
+    height: "360px",
+    background: "#f1f5f9",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  }}
+>
+  {persona.foto?.url ? (
+    <img
+      src={persona.foto.url}
+      alt={persona.nombre}
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "contain",
+        display: "block",
+      }}
+    />
+  ) : (
+    <Search
+      size={80}
+      color="#94a3b8"
+    />
+  )}
+</div>
 
                       {/* INFORMACIÓN */}
 
