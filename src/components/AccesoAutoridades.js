@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  LockKeyhole,
+  Lock,
   User,
   LogIn,
   ShieldCheck,
@@ -59,9 +59,7 @@ const AccesoAutoridades = () => {
         err
       );
 
-      if (
-        err.response?.status === 401
-      ) {
+      if (err.response?.status === 401) {
         setError(
           "Usuario o contraseña incorrectos."
         );
@@ -157,7 +155,6 @@ const AccesoAutoridades = () => {
             }}
           >
             <AlertCircle size={18} />
-
             <span>{error}</span>
           </div>
         )}
@@ -184,7 +181,8 @@ const AccesoAutoridades = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
-                border: "1px solid #cbd5e1",
+                border:
+                  "1px solid #cbd5e1",
                 borderRadius: "10px",
                 padding: "0 12px",
               }}
@@ -198,9 +196,7 @@ const AccesoAutoridades = () => {
                 type="text"
                 value={usuario}
                 onChange={(e) =>
-                  setUsuario(
-                    e.target.value
-                  )
+                  setUsuario(e.target.value)
                 }
                 autoComplete="username"
                 placeholder="Usuario"
@@ -236,12 +232,13 @@ const AccesoAutoridades = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
-                border: "1px solid #cbd5e1",
+                border:
+                  "1px solid #cbd5e1",
                 borderRadius: "10px",
                 padding: "0 12px",
               }}
             >
-              <LockKeyhole
+              <Lock
                 size={20}
                 color="#64748b"
               />
@@ -250,9 +247,7 @@ const AccesoAutoridades = () => {
                 type="password"
                 value={password}
                 onChange={(e) =>
-                  setPassword(
-                    e.target.value
-                  )
+                  setPassword(e.target.value)
                 }
                 autoComplete="current-password"
                 placeholder="Contraseña"
