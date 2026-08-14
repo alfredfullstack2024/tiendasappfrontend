@@ -227,6 +227,24 @@ const MenuPrincipal = () => {
   🔎
   Personas no localizadas
 </Link>
+    <Link
+  to="/salvos"
+  style={{
+    background: "#16a34a",
+    color: "#fff",
+    textDecoration: "none",
+    padding: "14px 24px",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    boxShadow: "0 4px 12px rgba(0,0,0,.2)",
+  }}
+>
+  ❤️
+  Personas a salvo
+</Link>
             <a
               href="https://www.appcreator24.com/app4111620-h57lx9"
               target="_blank"
@@ -291,8 +309,17 @@ const MenuPrincipal = () => {
               (opcion, index) => (
 
                 <Link
-                  key={index}
-                  to="/registro"
+  key={index}
+  to={
+    opcion.titulo === "Estoy a salvo"
+      ? "/salvos"
+      : "/registro"
+  }
+  className="categoria-card"
+  style={{
+    textDecoration: "none",
+  }}
+>
                   className="categoria-card"
                   style={{
                     textDecoration: "none",
