@@ -105,13 +105,7 @@ const Reportes = () => {
     return Number(valor).toLocaleString("es-CO");
   };
 
-  const porcentaje = (valor) => {
-    if (valor === null || valor === undefined) {
-      return "0%";
-    }
-
-    return `${Number(valor).toFixed(1)}%`;
-  };
+  
 
   const obtenerValor = (objeto, posiblesCampos) => {
     if (!objeto) return "";
