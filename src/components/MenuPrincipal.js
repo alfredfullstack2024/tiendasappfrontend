@@ -461,12 +461,11 @@ const MenuPrincipal = () => {
           />
 
           <h3>
-            ¿Buscas un negocio local?
+            COLOMBIA SOMOS TODOS
           </h3>
 
           <p>
-            El directorio de negocios de TIENDASAPP
-            continúa disponible.
+            Directorio para reportar su situacion
           </p>
 
           <Link
@@ -501,7 +500,7 @@ const MenuPrincipal = () => {
               <HeartHandshake size={24} />
 
               <span>
-                TIENDASAPP AYUDA
+                COLOMBIA AYUDA
               </span>
 
             </div>
@@ -544,7 +543,7 @@ const MenuPrincipal = () => {
           <div className="footer-section">
 
             <h4>
-              TIENDASAPP
+              ALFREDFULLSTACK.COM
             </h4>
 
             <ul>
@@ -571,7 +570,7 @@ const MenuPrincipal = () => {
         <div className="footer-bottom">
 
           <p>
-            © 2026 TIENDASAPP · Herramienta ciudadana
+            © 2026 www.alfredfullstack.com · Herramienta ciudadana
           </p>
 
         </div>
