@@ -27,9 +27,70 @@ import {
 } from "lucide-react";
 
 import axios from "axios";
-
 const API_URL =
   "https://tiendasappbackend.onrender.com";
+
+// =====================================================
+// UTILIDAD PARA MOSTRAR TEXTO DE FORMA SEGURA
+// =====================================================
+
+const textoSeguro = (valor) => {
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === ""
+  ) {
+    return "Sin información";
+  }
+
+  if (typeof valor === "object") {
+    if (
+      valor._id !== undefined &&
+      valor._id !== null
+    ) {
+      return String(valor._id);
+    }
+
+    if (
+      valor.nombre !== undefined &&
+      valor.nombre !== null
+    ) {
+      return String(valor.nombre);
+    }
+
+    if (
+      valor.departamento !== undefined &&
+      valor.departamento !== null
+    ) {
+      return String(valor.departamento);
+    }
+
+    if (
+      valor.ciudad !== undefined &&
+      valor.ciudad !== null
+    ) {
+      return String(valor.ciudad);
+    }
+
+    if (
+      valor.municipio !== undefined &&
+      valor.municipio !== null
+    ) {
+      return String(valor.municipio);
+    }
+
+    if (
+      valor.necesidad !== undefined &&
+      valor.necesidad !== null
+    ) {
+      return String(valor.necesidad);
+    }
+
+    return "Sin información";
+  }
+
+  return String(valor);
+};
 
 const Reportes = () => {
   const navigate = useNavigate();
@@ -204,84 +265,7 @@ const Reportes = () => {
     );
   };
 
-  const textoSeguro = (valor) => {
-    if (
-      valor === null ||
-      valor === undefined ||
-      valor === ""
-    ) {
-      return "Sin información";
-    }
-
-    if (
-      typeof valor ===
-      "object"
-    ) {
-      if (
-        valor._id !==
-          undefined &&
-        valor._id !== null
-      ) {
-        return String(
-          valor._id
-        );
-      }
-
-      if (
-        valor.nombre !==
-          undefined &&
-        valor.nombre !== null
-      ) {
-        return String(
-          valor.nombre
-        );
-      }
-
-      if (
-        valor.departamento !==
-          undefined &&
-        valor.departamento !== null
-      ) {
-        return String(
-          valor.departamento
-        );
-      }
-
-      if (
-        valor.ciudad !==
-          undefined &&
-        valor.ciudad !== null
-      ) {
-        return String(
-          valor.ciudad
-        );
-      }
-
-      if (
-        valor.municipio !==
-          undefined &&
-        valor.municipio !== null
-      ) {
-        return String(
-          valor.municipio
-        );
-      }
-
-      if (
-        valor.necesidad !==
-          undefined &&
-        valor.necesidad !== null
-      ) {
-        return String(
-          valor.necesidad
-        );
-      }
-
-      return "Sin información";
-    }
-
-    return String(valor);
-  };
+ 
 
   const obtenerValor = (
     objeto,
