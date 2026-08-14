@@ -16,6 +16,7 @@ import Desaparecidos from "./components/Desaparecidos";
 import Salvos from "./components/Salvos";
 import Reportes from "./components/Reportes";
 import AccesoAutoridades from "./components/AccesoAutoridades";
+import ReportesAutoridades from "./components/ReportesAutoridades";
 
 function App() {
   return (
@@ -68,6 +69,11 @@ function App() {
 <Route
   path="/centro-control"
   element={<AccesoAutoridades />}
+/>
+
+              <Route
+  path="/centro-control/reportes"
+  element={<ReportesAutoridades />}
 />
         </Routes>
 
