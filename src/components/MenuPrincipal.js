@@ -6,12 +6,9 @@ import {
   Plus,
   Download,
   HeartHandshake,
-  Home,
   Search,
   MapPin,
   AlertTriangle,
-  Users,
-  HandHelping,
 } from "lucide-react";
 
 const MenuPrincipal = () => {
@@ -422,10 +419,10 @@ const MenuPrincipal = () => {
               }}
             >
 
-              <HandHelping
-                size={32}
-                color="#16a34a"
-              />
+              <HeartHandshake
+  size={32}
+  color="#16a34a"
+/>
 
               <h3>
                 La comunidad ayuda
