@@ -14,6 +14,7 @@ import CategoriaView from "./components/CategoriaView";
 import DetallesTienda from "./components/DetallesTienda";
 import Desaparecidos from "./components/Desaparecidos";
 import Salvos from "./components/Salvos";
+import Reportes from "./components/Reportes";
 
 function App() {
   return (
@@ -22,37 +23,43 @@ function App() {
 
         <Routes>
 
-          {/* Página principal */}
+          {/* INICIO */}
           <Route
             path="/"
             element={<MenuPrincipal />}
           />
 
-          {/* Registro de situación */}
+          {/* REGISTRO DE SITUACIÓN */}
           <Route
             path="/registro"
             element={<RegistroTienda />}
           />
 
-          {/* Personas no localizadas */}
+          {/* PERSONAS NO LOCALIZADAS */}
           <Route
             path="/desaparecidos"
             element={<Desaparecidos />}
           />
 
-          {/* Personas a salvo */}
+          {/* PERSONAS A SALVO */}
           <Route
             path="/salvos"
             element={<Salvos />}
           />
 
-          {/* Categorías */}
+          {/* DASHBOARD / REPORTES */}
+          <Route
+            path="/reportes"
+            element={<Reportes />}
+          />
+
+          {/* CATEGORÍAS */}
           <Route
             path="/categoria/:categoria"
             element={<CategoriaView />}
           />
 
-          {/* Detalle */}
+          {/* DETALLE */}
           <Route
             path="/tienda/:id"
             element={<DetallesTienda />}
