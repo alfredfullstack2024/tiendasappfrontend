@@ -7,16 +7,39 @@ import MenuPrincipal from "./components/MenuPrincipal";
 import RegistroTienda from "./components/RegistroTienda";
 import CategoriaView from "./components/CategoriaView";
 import DetallesTienda from "./components/DetallesTienda";
+import Desaparecidos from "./components/Desaparecidos";
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<MenuPrincipal />} />
-          <Route path="/registro" element={<RegistroTienda />} />
-          <Route path="/categoria/:categoria" element={<CategoriaView />} />
-          <Route path="/tienda/:id" element={<DetallesTienda />} />
+
+          <Route
+            path="/"
+            element={<MenuPrincipal />}
+          />
+
+          <Route
+            path="/registro"
+            element={<RegistroTienda />}
+          />
+
+          <Route
+            path="/desaparecidos"
+            element={<Desaparecidos />}
+          />
+
+          <Route
+            path="/categoria/:categoria"
+            element={<CategoriaView />}
+          />
+
+          <Route
+            path="/tienda/:id"
+            element={<DetallesTienda />}
+          />
+
         </Routes>
       </div>
     </Router>
