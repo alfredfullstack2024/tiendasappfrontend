@@ -6,7 +6,6 @@ import {
   MapPin,
   Calendar,
   HeartHandshake,
-  Camera,
   CheckCircle,
 } from "lucide-react";
 import axios from "axios";
@@ -57,9 +56,6 @@ const Salvos = () => {
   const [direccion, setDireccion] = useState("");
   const [telefono, setTelefono] = useState("");
   const [descripcion, setDescripcion] = useState("");
-
-  const [foto, setFoto] = useState(null);
-  const [fotoPreview, setFotoPreview] = useState("");
 
   const [busqueda, setBusqueda] = useState("");
   const [ciudadFiltro, setCiudadFiltro] = useState("Todas");
@@ -113,35 +109,6 @@ const Salvos = () => {
   }, []);
 
   // =====================================================
-  // SELECCIONAR FOTO
-  // =====================================================
-
-  const seleccionarFoto = (e) => {
-    const archivo = e.target.files?.[0];
-
-    if (!archivo) {
-      return;
-    }
-
-    if (!archivo.type.startsWith("image/")) {
-      setError("Solo puedes seleccionar una imagen.");
-      return;
-    }
-
-    if (archivo.size > 5 * 1024 * 1024) {
-      setError("La fotografía no puede superar los 5 MB.");
-      return;
-    }
-
-    setError("");
-
-    setFoto(archivo);
-
-    const preview = URL.createObjectURL(archivo);
-    setFotoPreview(preview);
-  };
-
-  // =====================================================
   // REGISTRAR PERSONA A SALVO
   // =====================================================
 
@@ -170,13 +137,6 @@ const Salvos = () => {
 
     if (!telefono.trim()) {
       setError("Ingresa un teléfono o WhatsApp.");
-      return;
-    }
-
-    if (!foto) {
-      setError(
-        "Debes seleccionar una fotografía para registrarte como a salvo."
-      );
       return;
     }
 
@@ -226,10 +186,8 @@ const Salvos = () => {
         JSON.stringify([])
       );
 
-      formData.append(
-        "foto",
-        foto
-      );
+      // IMPORTANTE:
+      // Para "Estoy a salvo" NO enviamos fotografía.
 
       await axios.post(
         `${API_URL}/api/emergencias`,
@@ -245,8 +203,6 @@ const Salvos = () => {
       setDireccion("");
       setTelefono("");
       setDescripcion("");
-      setFoto(null);
-      setFotoPreview("");
 
       await cargarPersonas();
 
@@ -693,87 +649,6 @@ const Salvos = () => {
               }}
             />
 
-            {/* FOTO */}
-
-            <label
-              style={{
-                display: "block",
-                fontWeight: "600",
-                marginTop: "18px",
-                marginBottom: "7px",
-              }}
-            >
-              Fotografía *
-            </label>
-
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                border:
-                  "2px dashed #86efac",
-                borderRadius: "10px",
-                padding: "20px",
-                cursor: "pointer",
-                background: "#f0fdf4",
-                color: "#166534",
-                fontWeight: "600",
-                textAlign: "center",
-              }}
-            >
-
-              <Camera size={22} />
-
-              Tomar fotografía o
-              seleccionar imagen
-
-              <input
-                type="file"
-                accept="image/*"
-                capture="user"
-                onChange={seleccionarFoto}
-                style={{
-                  display: "none",
-                }}
-              />
-
-            </label>
-
-            {/* PREVIEW */}
-
-            {fotoPreview && (
-              <div
-                style={{
-                  marginTop: "15px",
-                  textAlign: "center",
-                }}
-              >
-
-                <img
-                  src={fotoPreview}
-                  alt="Vista previa"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "350px",
-                    borderRadius: "10px",
-                    objectFit: "contain",
-                  }}
-                />
-
-                <p
-                  style={{
-                    color: "#64748b",
-                    fontSize: "13px",
-                  }}
-                >
-                  Fotografía seleccionada
-                </p>
-
-              </div>
-            )}
-
             {/* AUTORIZACION */}
 
             <div
@@ -789,8 +664,8 @@ const Salvos = () => {
             >
               ❤️ Al registrarte autorizas la
               publicación de tu nombre, ciudad
-              y fotografía para informar que estás
-              a salvo.
+              y dirección de referencia para
+              informar que estás a salvo.
             </div>
 
             {/* BOTON */}
@@ -1044,46 +919,20 @@ const Salvos = () => {
                   }}
                 >
 
-                  {/* FOTO */}
-
                   <div
                     style={{
-                      width: "100%",
-                      height: "360px",
-                      background: "#f1f5f9",
+                      height: "100px",
+                      background:
+                        "linear-gradient(135deg, #dcfce7, #bbf7d0)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      overflow: "hidden",
                     }}
                   >
-
-                    {persona.foto?.url ? (
-
-                      <img
-                        src={
-                          persona.foto.url
-                        }
-                        alt={
-                          persona.nombre
-                        }
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "contain",
-                          display: "block",
-                        }}
-                      />
-
-                    ) : (
-
-                      <HeartHandshake
-                        size={80}
-                        color="#94a3b8"
-                      />
-
-                    )}
-
+                    <HeartHandshake
+                      size={60}
+                      color="#16a34a"
+                    />
                   </div>
 
                   {/* INFORMACION */}
