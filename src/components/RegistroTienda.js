@@ -1,4 +1,3 @@
-```javascript
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload, Check, X, HeartHandshake } from "lucide-react";
@@ -102,11 +101,11 @@ const RegistroTienda = () => {
 
   const handleNecesidadChange = (necesidad) => {
     setFormData((prev) => {
-      const yaExiste = prev.necesidades.includes(necesidad);
+      const existe = prev.necesidades.includes(necesidad);
 
       return {
         ...prev,
-        necesidades: yaExiste
+        necesidades: existe
           ? prev.necesidades.filter((item) => item !== necesidad)
           : [...prev.necesidades, necesidad],
       };
@@ -114,11 +113,13 @@ const RegistroTienda = () => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files && e.target.files[0];
 
-    if (!file) return;
+    if (!file) {
+      return;
+    }
 
-    // Solo una fotografía
+    // Solo permitimos una imagen
     setArchivo(file);
 
     const reader = new FileReader();
@@ -135,6 +136,7 @@ const RegistroTienda = () => {
     setPreviewImage("");
 
     const input = document.getElementById("foto");
+
     if (input) {
       input.value = "";
     }
@@ -212,8 +214,11 @@ const RegistroTienda = () => {
       return false;
     }
 
-    // La fotografía SOLO es obligatoria para persona no localizada
-    if (tipoReporte === "Persona no localizada" && !archivo) {
+    // Única situación que requiere fotografía
+    if (
+      tipoReporte === "Persona no localizada" &&
+      !archivo
+    ) {
       mostrarMensaje(
         "Para reportar una persona no localizada debes adjuntar una fotografía",
         "error"
@@ -227,46 +232,56 @@ const RegistroTienda = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validarFormulario()) return;
+    if (!validarFormulario()) {
+      return;
+    }
 
     setLoading(true);
 
     try {
-      const formDataToSend = new FormData();
+      const datos = new FormData();
 
-      formDataToSend.append("nombre", formData.nombre);
-      formDataToSend.append("ciudad", formData.ciudad);
-      formDataToSend.append("direccion", formData.direccion);
-      formDataToSend.append("tipoReporte", formData.tipoReporte);
-      formDataToSend.append(
+      datos.append("nombre", formData.nombre);
+      datos.append("ciudad", formData.ciudad);
+      datos.append("direccion", formData.direccion);
+      datos.append("tipoReporte", formData.tipoReporte);
+
+      datos.append(
         "telefonoWhatsapp",
         formData.telefonoWhatsapp.replace(/\D/g, "")
       );
-      formDataToSend.append(
+
+      datos.append(
         "estadoVivienda",
         formData.estadoVivienda
       );
-      formDataToSend.append(
+
+      datos.append(
         "personasAfectadas",
         formData.personasAfectadas
       );
-      formDataToSend.append(
+
+      datos.append(
         "necesidades",
         JSON.stringify(formData.necesidades)
       );
-      formDataToSend.append("descripcion", formData.descripcion);
 
-      // SOLO se envía fotografía para persona no localizada
+      datos.append(
+        "descripcion",
+        formData.descripcion
+      );
+
+      // Solo enviar fotografía para persona no localizada
       if (
         formData.tipoReporte === "Persona no localizada" &&
         archivo
       ) {
-        formDataToSend.append("foto", archivo);
+        datos.append("foto", archivo);
       }
 
       await axios.post(
         "https://tiendasappbackend.onrender.com/api/emergencias",
-        formDataToSend,
+        datos,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -298,32 +313,61 @@ const RegistroTienda = () => {
         navigate("/");
       }, 2500);
     } catch (error) {
-      console.error("Error registrando reporte:", error);
+      console.error(
+        "Error registrando reporte:",
+        error
+      );
 
       const mensajeError =
-        error.response?.data?.error ||
-        "Error registrando el reporte. Intenta nuevamente.";
+        error.response &&
+        error.response.data &&
+        error.response.data.error
+          ? error.response.data.error
+          : "Error registrando el reporte. Intenta nuevamente.";
 
-      mostrarMensaje(mensajeError, "error");
+      mostrarMensaje(
+        mensajeError,
+        "error"
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  const mostrarEstadoVivienda =
+    formData.tipoReporte === "Daños en mi vivienda" ||
+    formData.tipoReporte === "Necesito ayuda";
+
+  const mostrarNecesidades =
+    formData.tipoReporte === "Necesito ayuda" ||
+    formData.tipoReporte === "Daños en mi vivienda";
+
+  const mostrarFoto =
+    formData.tipoReporte === "Persona no localizada";
+
   return (
     <div className="registro-tienda">
+
       <div className="registro-container">
 
         <div className="registro-header">
 
-          <Link to="/" className="back-button">
+          <Link
+            to="/"
+            className="back-button"
+          >
             <ArrowLeft size={20} />
             Volver
           </Link>
 
           <div className="logo">
+
             <HeartHandshake size={32} />
-            <h1>Registra tu situación</h1>
+
+            <h1>
+              Registra tu situación
+            </h1>
+
           </div>
 
           <p>
@@ -333,14 +377,19 @@ const RegistroTienda = () => {
         </div>
 
         {mensaje && (
-          <div className={`mensaje ${tipoMensaje}`}>
+          <div
+            className={
+              "mensaje " + tipoMensaje
+            }
+          >
             {tipoMensaje === "success" ? (
               <Check size={20} />
             ) : (
               <X size={20} />
             )}
 
-            {mensaje}
+            <span>{mensaje}</span>
+
           </div>
         )}
 
@@ -462,7 +511,7 @@ const RegistroTienda = () => {
           </div>
 
 
-          {/* TIPO REPORTE */}
+          {/* TIPO DE REPORTE */}
 
           <div className="form-row">
 
@@ -502,8 +551,7 @@ const RegistroTienda = () => {
 
           {/* ESTADO VIVIENDA */}
 
-          {(formData.tipoReporte === "Daños en mi vivienda" ||
-            formData.tipoReporte === "Necesito ayuda") && (
+          {mostrarEstadoVivienda && (
 
             <div className="form-row">
 
@@ -524,14 +572,16 @@ const RegistroTienda = () => {
                     Selecciona el estado
                   </option>
 
-                  {estadosVivienda.map((estado) => (
-                    <option
-                      key={estado}
-                      value={estado}
-                    >
-                      {estado}
-                    </option>
-                  ))}
+                  {estadosVivienda.map(
+                    (estado) => (
+                      <option
+                        key={estado}
+                        value={estado}
+                      >
+                        {estado}
+                      </option>
+                    )
+                  )}
 
                 </select>
 
@@ -542,7 +592,7 @@ const RegistroTienda = () => {
           )}
 
 
-          {/* PERSONAS */}
+          {/* PERSONAS AFECTADAS */}
 
           <div className="form-row">
 
@@ -569,8 +619,7 @@ const RegistroTienda = () => {
 
           {/* NECESIDADES */}
 
-          {(formData.tipoReporte === "Necesito ayuda" ||
-            formData.tipoReporte === "Daños en mi vivienda") && (
+          {mostrarNecesidades && (
 
             <div className="form-group">
 
@@ -588,36 +637,42 @@ const RegistroTienda = () => {
                 }}
               >
 
-                {necesidades.map((necesidad) => (
+                {necesidades.map(
+                  (necesidad) => (
 
-                  <label
-                    key={necesidad}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      padding: "10px",
-                      border: "1px solid #ddd",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                    }}
-                  >
+                    <label
+                      key={necesidad}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        padding: "10px",
+                        border: "1px solid #ddd",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                      }}
+                    >
 
-                    <input
-                      type="checkbox"
-                      checked={formData.necesidades.includes(
-                        necesidad
-                      )}
-                      onChange={() =>
-                        handleNecesidadChange(necesidad)
-                      }
-                    />
+                      <input
+                        type="checkbox"
+                        checked={formData.necesidades.includes(
+                          necesidad
+                        )}
+                        onChange={() =>
+                          handleNecesidadChange(
+                            necesidad
+                          )
+                        }
+                      />
 
-                    {necesidad}
+                      <span>
+                        {necesidad}
+                      </span>
 
-                  </label>
+                    </label>
 
-                ))}
+                  )
+                )}
 
               </div>
 
@@ -626,9 +681,9 @@ const RegistroTienda = () => {
           )}
 
 
-          {/* FOTO SOLO DESAPARECIDOS */}
+          {/* FOTO */}
 
-          {formData.tipoReporte === "Persona no localizada" && (
+          {mostrarFoto && (
 
             <div className="form-group">
 
@@ -692,7 +747,9 @@ const RegistroTienda = () => {
                       onClick={eliminarImagen}
                       className="remove-image"
                     >
+
                       <X size={16} />
+
                     </button>
 
                   </div>
@@ -752,9 +809,9 @@ const RegistroTienda = () => {
         </form>
 
       </div>
+
     </div>
   );
 };
 
 export default RegistroTienda;
-```
