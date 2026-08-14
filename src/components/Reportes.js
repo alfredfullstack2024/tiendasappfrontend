@@ -390,13 +390,7 @@ const Reportes = () => {
     1
   );
 
-  const maxEstadoVivienda = Math.max(
-    ...porEstadoVivienda.map(
-      (item) => obtenerCantidad(item)
-    ),
-    1
-  );
-
+ 
   const maxEvolucion = Math.max(
     ...evolucion.map(
       (item) => obtenerCantidad(item)
