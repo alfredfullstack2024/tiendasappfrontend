@@ -122,7 +122,7 @@ const MenuPrincipal = () => {
             }}
           >
             <strong>
-              🇨🇴 TIENDASAPP AYUDA
+              🇨🇴 COLOMBIA AYUDA
             </strong>
 
             <br />
