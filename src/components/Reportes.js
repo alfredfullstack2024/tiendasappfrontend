@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import {
   ArrowLeft,
   BarChart3,
@@ -15,7 +16,8 @@ import {
   ShieldCheck,
   TrendingUp,
   Package,
-} from "lucide-react";import axios from "axios";
+} from "lucide-react";
+import axios from "axios";
 
 const API_URL = "https://tiendasappbackend.onrender.com";
 
@@ -644,7 +646,7 @@ const Reportes = () => {
           />
 
           <Indicador
-            icon={<UsersRound size={25} />}
+            icon={<Users size={25} />}
             titulo="Necesitan ayuda"
             valor={numero(
               resumen.personasNecesitanAyuda
