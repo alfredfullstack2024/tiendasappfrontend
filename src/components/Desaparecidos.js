@@ -58,42 +58,36 @@ const Desaparecidos = () => {
   }, []);
 
   const cargarPersonas = async () => {
-    try {
-      setLoading(true);
-      setError("");
+  try {
+    setLoading(true);
+    setError("");
 
-      const response = await axios.get(
-        `${API_URL}/api/emergencias?tipoReporte=${encodeURIComponent(
-          "Persona no localizada"
-        )}`
-      );
+    const response = await axios.get(
+      `${API_URL}/api/public/desaparecidos`
+    );
 
-      const reportes =
-        response.data?.reportes || [];
+    const reportes =
+      response.data?.reportes || [];
 
-      const desaparecidos =
-        reportes.filter(
-          (reporte) =>
-            reporte.activa !== false &&
-            reporte.tipoReporte ===
-              "Persona no localizada"
-        );
+    const desaparecidos = reportes.filter(
+      (reporte) =>
+        reporte.activa !== false
+    );
 
-      setPersonas(desaparecidos);
-    } catch (err) {
-      console.error(
-        "Error cargando personas no localizadas:",
-        err
-      );
+    setPersonas(desaparecidos);
+  } catch (err) {
+    console.error(
+      "Error cargando personas no localizadas:",
+      err
+    );
 
-      setError(
-        "No fue posible cargar los reportes. Intenta nuevamente."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    setError(
+      "No fue posible cargar los reportes. Intenta nuevamente."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   // =====================================================
   // FILTRAR POR NOMBRE Y CIUDAD
   // =====================================================
