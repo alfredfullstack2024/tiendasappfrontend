@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import {
   Store,
   Plus,
-  Download,
   HeartHandshake,
   Search,
   MapPin,
@@ -174,7 +173,6 @@ const MenuPrincipal = () => {
               textAlign: "center",
             }}
           >
-
             <strong>
               <MapPin
                 size={18}
@@ -183,7 +181,6 @@ const MenuPrincipal = () => {
                   marginRight: "5px",
                 }}
               />
-
               Municipios habilitados para reportes
             </strong>
 
@@ -196,7 +193,6 @@ const MenuPrincipal = () => {
             >
               {ciudades.join(" • ")}
             </p>
-
           </div>
 
           {/* =====================================================
@@ -255,8 +251,7 @@ const MenuPrincipal = () => {
                   "0 4px 12px rgba(0,0,0,.2)",
               }}
             >
-              🔎
-              Personas no localizadas
+              🔎 Personas no localizadas
             </Link>
 
             {/* PERSONAS A SALVO */}
@@ -277,11 +272,13 @@ const MenuPrincipal = () => {
                   "0 4px 12px rgba(0,0,0,.2)",
               }}
             >
-              ❤️
-              Personas a salvo
+              ❤️ Personas a salvo
             </Link>
 
-            
+          </div>
+
+          {/* TEXTO INFORMATIVO */}
+
           <p
             style={{
               marginTop: "18px",
@@ -325,8 +322,6 @@ const MenuPrincipal = () => {
                   }}
                 >
 
-                  {/* ICONO */}
-
                   <div
                     className="categoria-icon"
                     style={{
@@ -336,13 +331,9 @@ const MenuPrincipal = () => {
                     {opcion.icono}
                   </div>
 
-                  {/* TITULO */}
-
                   <h3>
                     {opcion.titulo}
                   </h3>
-
-                  {/* DESCRIPCIÓN */}
 
                   <p
                     style={{
@@ -354,8 +345,6 @@ const MenuPrincipal = () => {
                   >
                     {opcion.descripcion}
                   </p>
-
-                  {/* FLECHA */}
 
                   <div
                     className="categoria-arrow"
@@ -552,8 +541,6 @@ const MenuPrincipal = () => {
 
         <div className="footer-content">
 
-          {/* COLUMNA 1 */}
-
           <div className="footer-section">
 
             <div className="logo">
@@ -574,8 +561,6 @@ const MenuPrincipal = () => {
             </p>
 
           </div>
-
-          {/* COLUMNA 2 */}
 
           <div className="footer-section">
 
@@ -606,8 +591,6 @@ const MenuPrincipal = () => {
             </ul>
 
           </div>
-
-          {/* COLUMNA 3 */}
 
           <div className="footer-section">
 
