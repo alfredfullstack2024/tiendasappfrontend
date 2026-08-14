@@ -5,7 +5,6 @@ import {
   BarChart3,
   MapPin,
   Users,
-  UsersRound,
   Heart,
   Search,
   Home,
@@ -16,8 +15,7 @@ import {
   ShieldCheck,
   TrendingUp,
   Package,
-} from "lucide-react";
-import axios from "axios";
+} from "lucide-react";import axios from "axios";
 
 const API_URL = "https://tiendasappbackend.onrender.com";
 
