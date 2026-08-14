@@ -15,6 +15,7 @@ import DetallesTienda from "./components/DetallesTienda";
 import Desaparecidos from "./components/Desaparecidos";
 import Salvos from "./components/Salvos";
 import Reportes from "./components/Reportes";
+import AccesoAutoridades from "./components/AccesoAutoridades";
 
 function App() {
   return (
@@ -64,7 +65,10 @@ function App() {
             path="/tienda/:id"
             element={<DetallesTienda />}
           />
-
+<Route
+  path="/centro-control"
+  element={<AccesoAutoridades />}
+/>
         </Routes>
 
       </div>
