@@ -95,7 +95,7 @@ const MenuPrincipal = () => {
       >
         <img
           src="https://raw.githubusercontent.com/alfredfullstack2024/tiendasappfrontend/main/src/superior.png"
-          alt="TiendasApp Ayuda"
+          alt="Colombia Ayuda"
           style={{
             width: "100%",
             height: "auto",
