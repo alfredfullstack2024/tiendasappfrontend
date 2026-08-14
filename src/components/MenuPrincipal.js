@@ -281,32 +281,7 @@ const MenuPrincipal = () => {
               Personas a salvo
             </Link>
 
-            {/* APP ANDROID */}
-
-            <a
-              href="https://www.appcreator24.com/app4111620-h57lx9"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                background: "#16a34a",
-                color: "#fff",
-                textDecoration: "none",
-                padding: "14px 24px",
-                borderRadius: "10px",
-                fontWeight: "bold",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                boxShadow:
-                  "0 4px 12px rgba(0,0,0,.2)",
-              }}
-            >
-              <Download size={20} />
-              📲 App Android
-            </a>
-
-          </div>
-
+            
           <p
             style={{
               marginTop: "18px",
