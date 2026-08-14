@@ -1,5 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
 import {
   ArrowLeft,
@@ -20,83 +28,141 @@ import {
 
 import axios from "axios";
 
-const API_URL = "https://tiendasappbackend.onrender.com";
+const API_URL =
+  "https://tiendasappbackend.onrender.com";
 
 const Reportes = () => {
-  const [dashboard, setDashboard] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const [departamento, setDepartamento] = useState("");
-  const [ciudad, setCiudad] = useState("");
-  const [tipoReporte, setTipoReporte] = useState("");
-  const [busqueda, setBusqueda] = useState("");
+  const [dashboard, setDashboard] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+  const [departamento, setDepartamento] =
+    useState("");
+
+  const [ciudad, setCiudad] =
+    useState("");
+
+  const [tipoReporte, setTipoReporte] =
+    useState("");
+
+  const [busqueda, setBusqueda] =
+    useState("");
 
   // =====================================================
   // CARGAR DASHBOARD
   // =====================================================
 
-  const cargarDashboard = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError("");
+  const cargarDashboard = useCallback(
+    async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-      const params = {};
+        const params = {};
 
-      if (departamento) {
-        params.departamento = departamento;
-      }
-
-      if (ciudad) {
-        params.ciudad = ciudad;
-      }
-
-      if (tipoReporte) {
-        params.tipoReporte = tipoReporte;
-      }
-
-      const response = await axios.get(
-        `${API_URL}/api/reportes/dashboard`,
-        {
-          params,
-          timeout: 30000,
+        if (departamento) {
+          params.departamento =
+            departamento;
         }
-      );
 
-      if (response.data && response.data.ok) {
-        setDashboard(response.data);
-      } else {
-        setError(
-          "El servidor no devolvió información válida."
-        );
-      }
-    } catch (err) {
-      console.error(
-        "Error cargando dashboard:",
-        err
-      );
+        if (ciudad) {
+          params.ciudad = ciudad;
+        }
 
-      if (err.response) {
-        setError(
-          `Error del servidor: ${
-            err.response.data?.mensaje ||
-            err.response.data?.message ||
-            err.response.status
-          }`
+        if (tipoReporte) {
+          params.tipoReporte =
+            tipoReporte;
+        }
+
+        const response =
+          await axios.get(
+            `${API_URL}/api/reportes/dashboard`,
+            {
+              params,
+              timeout: 30000,
+
+              // IMPORTANTE:
+              // envia la cookie HttpOnly
+              // de autenticacion
+              withCredentials: true,
+            }
+          );
+
+        if (
+          response.data &&
+          response.data.ok
+        ) {
+          setDashboard(
+            response.data
+          );
+        } else {
+          setError(
+            "El servidor no devolvió información válida."
+          );
+        }
+      } catch (err) {
+        console.error(
+          "Error cargando dashboard:",
+          err
         );
-      } else if (err.request) {
-        setError(
-          "No fue posible comunicarse con el servidor."
-        );
-      } else {
-        setError(
-          "No fue posible cargar el dashboard."
-        );
+
+        // =================================================
+        // SESION NO AUTORIZADA
+        // =================================================
+
+        if (
+          err.response?.status ===
+          401
+        ) {
+          navigate(
+            "/centro-control",
+            {
+              replace: true,
+            }
+          );
+
+          return;
+        }
+
+        if (err.response) {
+          setError(
+            `Error del servidor: ${
+              err.response.data
+                ?.mensaje ||
+              err.response.data
+                ?.message ||
+              err.response.status
+            }`
+          );
+        } else if (
+          err.request
+        ) {
+          setError(
+            "No fue posible comunicarse con el servidor."
+          );
+        } else {
+          setError(
+            "No fue posible cargar el dashboard."
+          );
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [departamento, ciudad, tipoReporte]);
+    },
+    [
+      departamento,
+      ciudad,
+      tipoReporte,
+      navigate,
+    ]
+  );
 
   useEffect(() => {
     cargarDashboard();
@@ -122,16 +188,23 @@ const Reportes = () => {
       return "0";
     }
 
-    const numeroConvertido = Number(valor);
+    const numeroConvertido =
+      Number(valor);
 
-    if (Number.isNaN(numeroConvertido)) {
+    if (
+      Number.isNaN(
+        numeroConvertido
+      )
+    ) {
       return "0";
     }
 
-    return numeroConvertido.toLocaleString("es-CO");
+    return numeroConvertido.toLocaleString(
+      "es-CO"
+    );
   };
 
-  const textoValor = (valor) => {
+  const textoSeguro = (valor) => {
     if (
       valor === null ||
       valor === undefined ||
@@ -140,47 +213,68 @@ const Reportes = () => {
       return "Sin información";
     }
 
-    if (typeof valor === "object") {
+    if (
+      typeof valor ===
+      "object"
+    ) {
       if (
-        valor._id !== undefined &&
+        valor._id !==
+          undefined &&
         valor._id !== null
       ) {
-        return String(valor._id);
+        return String(
+          valor._id
+        );
       }
 
       if (
-        valor.nombre !== undefined &&
+        valor.nombre !==
+          undefined &&
         valor.nombre !== null
       ) {
-        return String(valor.nombre);
+        return String(
+          valor.nombre
+        );
       }
 
       if (
-        valor.departamento !== undefined &&
+        valor.departamento !==
+          undefined &&
         valor.departamento !== null
       ) {
-        return String(valor.departamento);
+        return String(
+          valor.departamento
+        );
       }
 
       if (
-        valor.ciudad !== undefined &&
+        valor.ciudad !==
+          undefined &&
         valor.ciudad !== null
       ) {
-        return String(valor.ciudad);
+        return String(
+          valor.ciudad
+        );
       }
 
       if (
-        valor.municipio !== undefined &&
+        valor.municipio !==
+          undefined &&
         valor.municipio !== null
       ) {
-        return String(valor.municipio);
+        return String(
+          valor.municipio
+        );
       }
 
       if (
-        valor.necesidad !== undefined &&
+        valor.necesidad !==
+          undefined &&
         valor.necesidad !== null
       ) {
-        return String(valor.necesidad);
+        return String(
+          valor.necesidad
+        );
       }
 
       return "Sin información";
@@ -191,15 +285,18 @@ const Reportes = () => {
 
   const obtenerValor = (
     objeto,
-    posiblesCampos
+    campos
   ) => {
     if (!objeto) {
       return "";
     }
 
-    for (const campo of posiblesCampos) {
+    for (
+      const campo of campos
+    ) {
       if (
-        objeto[campo] !== undefined &&
+        objeto[campo] !==
+          undefined &&
         objeto[campo] !== null
       ) {
         return objeto[campo];
@@ -209,7 +306,9 @@ const Reportes = () => {
     return "";
   };
 
-  const obtenerCantidad = (item) => {
+  const obtenerCantidad = (
+    item
+  ) => {
     if (!item) {
       return 0;
     }
@@ -222,9 +321,12 @@ const Reportes = () => {
       item.valor ??
       0;
 
-    const numeroValor = Number(valor);
+    const numeroValor =
+      Number(valor);
 
-    return Number.isNaN(numeroValor)
+    return Number.isNaN(
+      numeroValor
+    )
       ? 0
       : numeroValor;
   };
@@ -233,7 +335,8 @@ const Reportes = () => {
   // DATOS
   // =====================================================
 
-  const resumen = dashboard?.resumen || {};
+  const resumen =
+    dashboard?.resumen || {};
 
   const indicadores =
     dashboard?.indicadores || {};
@@ -246,7 +349,9 @@ const Reportes = () => {
       : [];
 
   const porCiudad =
-    Array.isArray(dashboard?.porCiudad)
+    Array.isArray(
+      dashboard?.porCiudad
+    )
       ? dashboard.porCiudad
       : [];
 
@@ -272,39 +377,49 @@ const Reportes = () => {
       : [];
 
   const evolucion =
-    Array.isArray(dashboard?.evolucion)
+    Array.isArray(
+      dashboard?.evolucion
+    )
       ? dashboard.evolucion
       : [];
 
   const ubicaciones =
-    Array.isArray(dashboard?.ubicaciones)
+    Array.isArray(
+      dashboard?.ubicaciones
+    )
       ? dashboard.ubicaciones
       : [];
 
   const alertas =
-    Array.isArray(dashboard?.alertas)
+    Array.isArray(
+      dashboard?.alertas
+    )
       ? dashboard.alertas
       : [];
 
   // =====================================================
-  // LISTAS PARA FILTROS
+  // FILTROS
   // =====================================================
 
   const departamentos = [
     ...new Set(
       porDepartamento
         .map((item) =>
-          textoValor(
-            obtenerValor(item, [
-              "departamento",
-              "_id",
-              "nombre",
-            ])
+          textoSeguro(
+            obtenerValor(
+              item,
+              [
+                "departamento",
+                "_id",
+                "nombre",
+              ]
+            )
           )
         )
         .filter(
           (item) =>
-            item !== "Sin información"
+            item !==
+            "Sin información"
         )
     ),
   ];
@@ -313,18 +428,22 @@ const Reportes = () => {
     ...new Set(
       porCiudad
         .map((item) =>
-          textoValor(
-            obtenerValor(item, [
-              "ciudad",
-              "municipio",
-              "_id",
-              "nombre",
-            ])
+          textoSeguro(
+            obtenerValor(
+              item,
+              [
+                "ciudad",
+                "municipio",
+                "_id",
+                "nombre",
+              ]
+            )
           )
         )
         .filter(
           (item) =>
-            item !== "Sin información"
+            item !==
+            "Sin información"
         )
     ),
   ];
@@ -333,70 +452,69 @@ const Reportes = () => {
     ...new Set(
       porTipoReporte
         .map((item) =>
-          textoValor(
-            obtenerValor(item, [
-              "tipoReporte",
-              "tipo",
-              "_id",
-              "nombre",
-            ])
+          textoSeguro(
+            obtenerValor(
+              item,
+              [
+                "tipoReporte",
+                "tipo",
+                "_id",
+                "nombre",
+              ]
+            )
           )
         )
         .filter(
           (item) =>
-            item !== "Sin información"
+            item !==
+            "Sin información"
         )
     ),
   ];
-
-  const ciudadesFiltradas =
-    ciudades.filter((nombre) =>
-      nombre
-        .toLowerCase()
-        .includes(
-          busqueda.toLowerCase()
-        )
-    );
 
   // =====================================================
   // MAXIMOS
   // =====================================================
 
-  const maxDepartamento = Math.max(
-    ...porDepartamento.map(
-      (item) => obtenerCantidad(item)
-    ),
-    1
-  );
+  const maxDepartamento =
+    Math.max(
+      ...porDepartamento.map(
+        obtenerCantidad
+      ),
+      1
+    );
 
-  const maxCiudad = Math.max(
-    ...porCiudad.map(
-      (item) => obtenerCantidad(item)
-    ),
-    1
-  );
+  const maxCiudad =
+    Math.max(
+      ...porCiudad.map(
+        obtenerCantidad
+      ),
+      1
+    );
 
-  const maxTipo = Math.max(
-    ...porTipoReporte.map(
-      (item) => obtenerCantidad(item)
-    ),
-    1
-  );
+  const maxTipo =
+    Math.max(
+      ...porTipoReporte.map(
+        obtenerCantidad
+      ),
+      1
+    );
 
-  const maxNecesidad = Math.max(
-    ...porNecesidad.map(
-      (item) => obtenerCantidad(item)
-    ),
-    1
-  );
+  const maxNecesidad =
+    Math.max(
+      ...porNecesidad.map(
+        obtenerCantidad
+      ),
+      1
+    );
 
- 
-  const maxEvolucion = Math.max(
-    ...evolucion.map(
-      (item) => obtenerCantidad(item)
-    ),
-    1
-  );
+  const maxEvolucion =
+    Math.max(
+      ...evolucion.map(
+        obtenerCantidad
+      ),
+      1
+    );
 
   // =====================================================
   // LOADING
@@ -406,12 +524,18 @@ const Reportes = () => {
     return (
       <div
         style={{
-          minHeight: "100vh",
-          background: "#f8fafc",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
+          minHeight:
+            "100vh",
+          background:
+            "#f8fafc",
+          display:
+            "flex",
+          alignItems:
+            "center",
+          justifyContent:
+            "center",
+          flexDirection:
+            "column",
           gap: "15px",
         }}
       >
@@ -421,15 +545,18 @@ const Reportes = () => {
         />
 
         <h3>
-          Cargando información de emergencia...
+          Cargando información
+          de emergencia...
         </h3>
 
         <p
           style={{
-            color: "#64748b",
+            color:
+              "#64748b",
           }}
         >
-          Consultando los reportes registrados
+          Consultando los
+          reportes registrados
         </p>
       </div>
     );
@@ -443,19 +570,28 @@ const Reportes = () => {
     return (
       <div
         style={{
-          minHeight: "100vh",
-          background: "#f8fafc",
-          padding: "40px 20px",
+          minHeight:
+            "100vh",
+          background:
+            "#f8fafc",
+          padding:
+            "40px 20px",
         }}
       >
         <div
           style={{
-            maxWidth: "700px",
-            margin: "0 auto",
-            background: "white",
-            borderRadius: "16px",
-            padding: "40px",
-            textAlign: "center",
+            maxWidth:
+              "700px",
+            margin:
+              "0 auto",
+            background:
+              "white",
+            borderRadius:
+              "16px",
+            padding:
+              "40px",
+            textAlign:
+              "center",
             boxShadow:
               "0 10px 30px rgba(0,0,0,0.08)",
           }}
@@ -465,17 +601,16 @@ const Reportes = () => {
             color="#dc2626"
           />
 
-          <h2
-            style={{
-              marginTop: "20px",
-            }}
-          >
-            No fue posible cargar los reportes
+          <h2>
+            No fue posible
+            cargar los
+            reportes
           </h2>
 
           <p
             style={{
-              color: "#64748b",
+              color:
+                "#64748b",
               margin:
                 "15px 0 25px",
             }}
@@ -484,33 +619,49 @@ const Reportes = () => {
           </p>
 
           <button
-            onClick={cargarDashboard}
+            onClick={
+              cargarDashboard
+            }
             style={{
-              border: "none",
-              background: "#2563eb",
-              color: "white",
-              padding: "12px 22px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              display: "inline-flex",
-              alignItems: "center",
+              border:
+                "none",
+              background:
+                "#2563eb",
+              color:
+                "white",
+              padding:
+                "12px 22px",
+              borderRadius:
+                "8px",
+              cursor:
+                "pointer",
+              fontWeight:
+                "bold",
+              display:
+                "inline-flex",
+              alignItems:
+                "center",
               gap: "8px",
             }}
           >
-            <RefreshCw size={18} />
+            <RefreshCw
+              size={18}
+            />
+
             Intentar nuevamente
           </button>
 
           <div
             style={{
-              marginTop: "20px",
+              marginTop:
+                "20px",
             }}
           >
             <Link
-              to="/"
+              to="/centro-control"
               style={{
-                color: "#2563eb",
+                color:
+                  "#2563eb",
                 textDecoration:
                   "none",
               }}
@@ -522,7 +673,7 @@ const Reportes = () => {
                     "middle",
                 }}
               />{" "}
-              Volver al inicio
+              Volver al acceso
             </Link>
           </div>
         </div>
@@ -537,9 +688,12 @@ const Reportes = () => {
   return (
     <div
       style={{
-        minHeight: "100vh",
-        background: "#f1f5f9",
-        paddingBottom: "60px",
+        minHeight:
+          "100vh",
+        background:
+          "#f1f5f9",
+        paddingBottom:
+          "60px",
       }}
     >
       {/* HEADER */}
@@ -548,24 +702,31 @@ const Reportes = () => {
         style={{
           background:
             "linear-gradient(135deg,#172554,#2563eb)",
-          color: "white",
-          padding: "25px 20px",
+          color:
+            "white",
+          padding:
+            "25px 20px",
         }}
       >
         <div
           style={{
-            maxWidth: "1400px",
-            margin: "0 auto",
+            maxWidth:
+              "1400px",
+            margin:
+              "0 auto",
           }}
         >
           <Link
             to="/"
             style={{
-              color: "white",
+              color:
+                "white",
               textDecoration:
                 "none",
-              display: "inline-flex",
-              alignItems: "center",
+              display:
+                "inline-flex",
+              alignItems:
+                "center",
               gap: "6px",
               marginBottom:
                 "20px",
@@ -573,16 +734,20 @@ const Reportes = () => {
                 "rgba(255,255,255,.15)",
               padding:
                 "8px 14px",
-              borderRadius: "8px",
+              borderRadius:
+                "8px",
             }}
           >
-            <ArrowLeft size={17} />
+            <ArrowLeft
+              size={17}
+            />
             Volver
           </Link>
 
           <div
             style={{
-              display: "flex",
+              display:
+                "flex",
               justifyContent:
                 "space-between",
               alignItems:
@@ -608,12 +773,14 @@ const Reportes = () => {
 
                 <h1
                   style={{
-                    margin: 0,
+                    margin:
+                      0,
                     fontSize:
                       "30px",
                   }}
                 >
-                  Centro de Información
+                  Centro de
+                  Información
                 </h1>
               </div>
 
@@ -621,11 +788,13 @@ const Reportes = () => {
                 style={{
                   margin:
                     "10px 0 0",
-                  opacity: 0.9,
+                  opacity:
+                    0.9,
                 }}
               >
-                Información ciudadana
-                para apoyar la
+                Información
+                ciudadana para
+                apoyar la
                 atención de
                 emergencias
               </p>
@@ -640,7 +809,8 @@ const Reportes = () => {
                   "white",
                 color:
                   "#1d4ed8",
-                border: "none",
+                border:
+                  "none",
                 padding:
                   "11px 18px",
                 borderRadius:
@@ -659,6 +829,7 @@ const Reportes = () => {
               <RefreshCw
                 size={17}
               />
+
               Actualizar
             </button>
           </div>
@@ -675,9 +846,7 @@ const Reportes = () => {
             "25px 20px",
         }}
       >
-        {/* =====================================================
-            FILTROS
-        ===================================================== */}
+        {/* FILTROS */}
 
         <section
           style={{
@@ -714,7 +883,8 @@ const Reportes = () => {
                 margin: 0,
               }}
             >
-              Filtros de información
+              Filtros de
+              información
             </h3>
           </div>
 
@@ -733,7 +903,8 @@ const Reportes = () => {
               }
               onChange={(e) =>
                 setDepartamento(
-                  e.target.value
+                  e.target
+                    .value
                 )
               }
               style={{
@@ -746,7 +917,8 @@ const Reportes = () => {
               }}
             >
               <option value="">
-                Todos los departamentos
+                Todos los
+                departamentos
               </option>
 
               {departamentos.map(
@@ -765,7 +937,8 @@ const Reportes = () => {
               value={ciudad}
               onChange={(e) =>
                 setCiudad(
-                  e.target.value
+                  e.target
+                    .value
                 )
               }
               style={{
@@ -778,7 +951,8 @@ const Reportes = () => {
               }}
             >
               <option value="">
-                Todos los municipios
+                Todos los
+                municipios
               </option>
 
               {ciudades.map(
@@ -799,7 +973,8 @@ const Reportes = () => {
               }
               onChange={(e) =>
                 setTipoReporte(
-                  e.target.value
+                  e.target
+                    .value
                 )
               }
               style={{
@@ -812,7 +987,8 @@ const Reportes = () => {
               }}
             >
               <option value="">
-                Todos los tipos de reporte
+                Todos los tipos
+                de reporte
               </option>
 
               {tipos.map(
@@ -849,9 +1025,7 @@ const Reportes = () => {
           </div>
         </section>
 
-        {/* =====================================================
-            INDICADORES
-        ===================================================== */}
+        {/* INDICADORES */}
 
         <section
           style={{
@@ -971,9 +1145,7 @@ const Reportes = () => {
           />
         </section>
 
-        {/* =====================================================
-            ALERTAS
-        ===================================================== */}
+        {/* ALERTAS */}
 
         {alertas.length >
           0 && (
@@ -998,7 +1170,8 @@ const Reportes = () => {
                 alignItems:
                   "center",
                 gap: "8px",
-                marginTop: 0,
+                marginTop:
+                  0,
                 color:
                   "#9a3412",
               }}
@@ -1013,7 +1186,8 @@ const Reportes = () => {
               style={{
                 display:
                   "grid",
-                gap: "10px",
+                gap:
+                  "10px",
               }}
             >
               {alertas.map(
@@ -1037,7 +1211,7 @@ const Reportes = () => {
                     }}
                   >
                     <strong>
-                      {textoValor(
+                      {textoSeguro(
                         obtenerValor(
                           alerta,
                           [
@@ -1057,7 +1231,7 @@ const Reportes = () => {
                           "#64748b",
                       }}
                     >
-                      {textoValor(
+                      {textoSeguro(
                         obtenerValor(
                           alerta,
                           [
@@ -1075,9 +1249,7 @@ const Reportes = () => {
           </section>
         )}
 
-        {/* =====================================================
-            INDICADORES DE CONTEXTO
-        ===================================================== */}
+        {/* CONTEXTO */}
 
         <section
           style={{
@@ -1097,9 +1269,9 @@ const Reportes = () => {
                 size={22}
               />
             }
-            valor={textoValor(
+            valor={
               indicadores.municipioMasReportado
-            )}
+            }
           />
 
           <InfoCard
@@ -1109,9 +1281,9 @@ const Reportes = () => {
                 size={22}
               />
             }
-            valor={textoValor(
+            valor={
               indicadores.departamentoMasReportado
-            )}
+            }
           />
 
           <InfoCard
@@ -1121,9 +1293,9 @@ const Reportes = () => {
                 size={22}
               />
             }
-            valor={textoValor(
+            valor={
               indicadores.necesidadPrioritaria
-            )}
+            }
           />
 
           <InfoCard
@@ -1139,9 +1311,7 @@ const Reportes = () => {
           />
         </section>
 
-        {/* =====================================================
-            GRAFICAS
-        ===================================================== */}
+        {/* GRAFICAS */}
 
         <section
           style={{
@@ -1151,11 +1321,9 @@ const Reportes = () => {
               "repeat(auto-fit,minmax(400px,1fr))",
             gap: "20px",
             marginBottom:
-              "25px",
+              "5px",
           }}
         >
-          {/* DEPARTAMENTOS */}
-
           <ChartCard
             titulo="Reportes por departamento"
             icon={
@@ -1174,7 +1342,7 @@ const Reportes = () => {
                   index
                 ) => {
                   const nombre =
-                    textoValor(
+                    textoSeguro(
                       obtenerValor(
                         item,
                         [
@@ -1211,8 +1379,6 @@ const Reportes = () => {
             )}
           </ChartCard>
 
-          {/* MUNICIPIOS */}
-
           <ChartCard
             titulo="Reportes por municipio"
             icon={
@@ -1247,9 +1413,7 @@ const Reportes = () => {
                 value={
                   busqueda
                 }
-                onChange={(
-                  e
-                ) =>
+                onChange={(e) =>
                   setBusqueda(
                     e.target
                       .value
@@ -1277,11 +1441,9 @@ const Reportes = () => {
             ) : (
               porCiudad
                 .filter(
-                  (
-                    item
-                  ) => {
+                  (item) => {
                     const nombre =
-                      textoValor(
+                      textoSeguro(
                         obtenerValor(
                           item,
                           [
@@ -1293,9 +1455,12 @@ const Reportes = () => {
                         )
                       );
 
-                    return ciudadesFiltradas.includes(
-                      nombre
-                    );
+                    return nombre
+                      .toLowerCase()
+                      .includes(
+                        busqueda
+                          .toLowerCase()
+                      );
                   }
                 )
                 .map(
@@ -1304,7 +1469,7 @@ const Reportes = () => {
                     index
                   ) => {
                     const nombre =
-                      textoValor(
+                      textoSeguro(
                         obtenerValor(
                           item,
                           [
@@ -1342,8 +1507,6 @@ const Reportes = () => {
             )}
           </ChartCard>
 
-          {/* TIPOS */}
-
           <ChartCard
             titulo="Tipos de reporte"
             icon={
@@ -1362,7 +1525,7 @@ const Reportes = () => {
                   index
                 ) => {
                   const nombre =
-                    textoValor(
+                    textoSeguro(
                       obtenerValor(
                         item,
                         [
@@ -1400,8 +1563,6 @@ const Reportes = () => {
             )}
           </ChartCard>
 
-          {/* NECESIDADES */}
-
           <ChartCard
             titulo="Necesidades reportadas"
             icon={
@@ -1420,7 +1581,7 @@ const Reportes = () => {
                   index
                 ) => {
                   const nombre =
-                    textoValor(
+                    textoSeguro(
                       obtenerValor(
                         item,
                         [
@@ -1459,9 +1620,7 @@ const Reportes = () => {
           </ChartCard>
         </section>
 
-        {/* =====================================================
-            ESTADO DE VIVIENDAS
-        ===================================================== */}
+        {/* VIVIENDAS */}
 
         <ChartCard
           titulo="Estado de las viviendas"
@@ -1490,7 +1649,7 @@ const Reportes = () => {
                   index
                 ) => {
                   const nombre =
-                    textoValor(
+                    textoSeguro(
                       obtenerValor(
                         item,
                         [
@@ -1553,9 +1712,7 @@ const Reportes = () => {
                             "4px",
                         }}
                       >
-                        {
-                          nombre
-                        }
+                        {nombre}
                       </div>
                     </div>
                   );
@@ -1565,9 +1722,7 @@ const Reportes = () => {
           )}
         </ChartCard>
 
-        {/* =====================================================
-            EVOLUCION
-        ===================================================== */}
+        {/* EVOLUCION */}
 
         <ChartCard
           titulo="Evolución de reportes"
@@ -1606,7 +1761,7 @@ const Reportes = () => {
                     index
                   ) => {
                     const fecha =
-                      textoValor(
+                      textoSeguro(
                         obtenerValor(
                           item,
                           [
@@ -1658,9 +1813,9 @@ const Reportes = () => {
                               "5px",
                           }}
                         >
-                          {
+                          {numero(
                             valor
-                          }
+                          )}
                         </strong>
 
                         <div
@@ -1687,9 +1842,7 @@ const Reportes = () => {
                               "vertical-rl",
                           }}
                         >
-                          {
-                            fecha
-                          }
+                          {fecha}
                         </span>
                       </div>
                     );
@@ -1700,9 +1853,7 @@ const Reportes = () => {
           )}
         </ChartCard>
 
-        {/* =====================================================
-            UBICACIONES
-        ===================================================== */}
+        {/* UBICACIONES */}
 
         <ChartCard
           titulo={`Ubicaciones registradas (${numero(
@@ -1728,17 +1879,14 @@ const Reportes = () => {
               }}
             >
               {ubicaciones
-                .slice(
-                  0,
-                  100
-                )
+                .slice(0, 100)
                 .map(
                   (
                     item,
                     index
                   ) => {
                     const ciudadUbicacion =
-                      textoValor(
+                      textoSeguro(
                         obtenerValor(
                           item,
                           [
@@ -1750,7 +1898,7 @@ const Reportes = () => {
                       );
 
                     const latitud =
-                      textoValor(
+                      textoSeguro(
                         obtenerValor(
                           item,
                           [
@@ -1762,7 +1910,7 @@ const Reportes = () => {
                       );
 
                     const longitud =
-                      textoValor(
+                      textoSeguro(
                         obtenerValor(
                           item,
                           [
@@ -1821,14 +1969,10 @@ const Reportes = () => {
                           }}
                         >
                           Lat:{" "}
-                          {
-                            latitud
-                          }
+                          {latitud}
                           <br />
                           Lng:{" "}
-                          {
-                            longitud
-                          }
+                          {longitud}
                         </span>
                       </div>
                     );
@@ -1838,9 +1982,7 @@ const Reportes = () => {
           )}
         </ChartCard>
 
-        {/* =====================================================
-            PIE
-        ===================================================== */}
+        {/* FOOTER */}
 
         <footer
           style={{
@@ -1866,8 +2008,11 @@ const Reportes = () => {
             <ShieldCheck
               size={18}
             />
-            Información generada a partir de
-            reportes ciudadanos.
+
+            Información
+            generada a partir
+            de reportes
+            ciudadanos.
           </p>
 
           {dashboard?.generadoEn && (
@@ -1887,7 +2032,7 @@ const Reportes = () => {
 };
 
 // =====================================================
-// COMPONENTE INDICADOR
+// INDICADOR
 // =====================================================
 
 const Indicador = ({
@@ -2013,52 +2158,11 @@ const InfoCard = ({
             "800",
         }}
       >
-        {textoSeguro(valor)}
+        {textoSeguro(
+          valor
+        )}
       </div>
     </div>
-  );
-};
-
-// =====================================================
-// PROTECCION FINAL CONTRA OBJETOS
-// =====================================================
-
-const textoSeguro = (valor) => {
-  if (
-    valor === null ||
-    valor === undefined ||
-    valor === ""
-  ) {
-    return "Sin información";
-  }
-
-  if (
-    typeof valor ===
-    "object"
-  ) {
-    if (
-      valor._id !==
-      undefined
-    ) {
-      return String(
-        valor._id
-      );
-    }
-
-    if (
-      valor.nombre !==
-      undefined
-    ) {
-      return String(
-        valor.nombre
-      );
-    }
-
-    return "Sin información";
-  }
-
-  return String(
-    valor
   );
 };
 
@@ -2125,7 +2229,9 @@ const BarItem = ({
       Math.max(
         3,
         (Number(valor) /
-          Number(max || 1)) *
+          Number(
+            max || 1
+          )) *
           100
       )
     );
@@ -2193,7 +2299,7 @@ const BarItem = ({
 };
 
 // =====================================================
-// NUMERO SEGURO
+// NUMERO
 // =====================================================
 
 const numeroSeguro = (
@@ -2231,7 +2337,8 @@ const Empty = () => {
           "#94a3b8",
       }}
     >
-      No hay información disponible.
+      No hay información
+      disponible.
     </div>
   );
 };
