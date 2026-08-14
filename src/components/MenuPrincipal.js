@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -12,44 +11,64 @@ import {
 } from "lucide-react";
 
 const MenuPrincipal = () => {
+  // =====================================================
+  // OPCIONES DE AYUDA
+  // =====================================================
+
   const opcionesAyuda = [
     {
       titulo: "Necesito ayuda",
-      descripcion: "Registra lo que necesitas y dónde te encuentras.",
+      descripcion:
+        "Registra lo que necesitas y dónde te encuentras.",
       icono: "🆘",
       color: "#dc2626",
+      ruta: "/registro",
     },
     {
       titulo: "Daños en mi vivienda",
-      descripcion: "Reporta el estado de tu vivienda después del sismo.",
+      descripcion:
+        "Reporta el estado de tu vivienda después del sismo.",
       icono: "🏚️",
       color: "#ea580c",
+      ruta: "/registro",
     },
     {
       titulo: "Persona no localizada",
-      descripcion: "Reporta una persona que aún no ha sido localizada.",
+      descripcion:
+        "Reporta una persona que aún no ha sido localizada.",
       icono: "🔎",
       color: "#7c3aed",
+      ruta: "/registro",
     },
     {
       titulo: "Estoy a salvo",
-      descripcion: "Informa que estás bien y dónde te encuentras.",
+      descripcion:
+        "Informa que estás bien para que tu familia y comunidad lo sepan.",
       icono: "❤️",
       color: "#16a34a",
+      ruta: "/salvos",
     },
     {
       titulo: "Quiero ofrecer ayuda",
-      descripcion: "Indica qué puedes aportar a otras personas.",
+      descripcion:
+        "Indica qué puedes aportar a otras personas afectadas.",
       icono: "🤝",
       color: "#2563eb",
+      ruta: "/registro",
     },
     {
       titulo: "Otro reporte",
-      descripcion: "Registra cualquier otra situación importante.",
+      descripcion:
+        "Registra cualquier otra situación importante.",
       icono: "📢",
       color: "#475569",
+      ruta: "/registro",
     },
   ];
+
+  // =====================================================
+  // MUNICIPIOS
+  // =====================================================
 
   const ciudades = [
     "Armenia",
@@ -85,7 +104,9 @@ const MenuPrincipal = () => {
   return (
     <div className="menu-principal">
 
-      {/* HEADER */}
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
 
       <header
         style={{
@@ -104,12 +125,15 @@ const MenuPrincipal = () => {
         />
       </header>
 
-
-      {/* HERO */}
+      {/* =====================================================
+          HERO
+      ===================================================== */}
 
       <section className="hero">
 
         <div className="hero-content">
+
+          {/* IDENTIDAD */}
 
           <div
             style={{
@@ -125,8 +149,6 @@ const MenuPrincipal = () => {
               🇨🇴 COLOMBIA AYUDA
             </strong>
 
-            <br />
-
             <span
               style={{
                 display: "block",
@@ -134,13 +156,14 @@ const MenuPrincipal = () => {
                 color: "#7f1d1d",
               }}
             >
-              Una herramienta ciudadana para registrar situaciones,
-              necesidades y personas afectadas.
+              Una herramienta ciudadana para registrar
+              situaciones, necesidades y personas afectadas.
             </span>
           </div>
 
-
-          {/* CIUDADES */}
+          {/* =====================================================
+              MUNICIPIOS
+          ===================================================== */}
 
           <div
             style={{
@@ -176,6 +199,9 @@ const MenuPrincipal = () => {
 
           </div>
 
+          {/* =====================================================
+              TITULO
+          ===================================================== */}
 
           <h2>
             🇨🇴 Colombia se ayuda
@@ -186,8 +212,9 @@ const MenuPrincipal = () => {
             solicita ayuda o ayuda a otras personas afectadas.
           </p>
 
-
-          {/* BOTON PRINCIPAL */}
+          {/* =====================================================
+              BOTONES PRINCIPALES
+          ===================================================== */}
 
           <div
             className="hero-actions"
@@ -200,51 +227,62 @@ const MenuPrincipal = () => {
             }}
           >
 
+            {/* REGISTRAR SITUACIÓN */}
+
             <Link
               to="/registro"
               className="btn-registro"
             >
               <Plus size={20} />
-
               Registrar mi situación
             </Link>
 
-<Link
-  to="/desaparecidos"
-  style={{
-    background: "#7c3aed",
-    color: "#fff",
-    textDecoration: "none",
-    padding: "14px 24px",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    boxShadow: "0 4px 12px rgba(0,0,0,.2)",
-  }}
->
-  🔎
-  Personas no localizadas
-</Link>
-    <Link
-  to="/salvos"
-  style={{
-    background: "#16a34a",
-    color: "#fff",
-    textDecoration: "none",
-    padding: "14px 24px",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    boxShadow: "0 4px 12px rgba(0,0,0,.2)",
-  }}
->
-  ❤️
-  Personas a salvo
-</Link>
+            {/* PERSONAS NO LOCALIZADAS */}
+
+            <Link
+              to="/desaparecidos"
+              style={{
+                background: "#7c3aed",
+                color: "#fff",
+                textDecoration: "none",
+                padding: "14px 24px",
+                borderRadius: "10px",
+                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                boxShadow:
+                  "0 4px 12px rgba(0,0,0,.2)",
+              }}
+            >
+              🔎
+              Personas no localizadas
+            </Link>
+
+            {/* PERSONAS A SALVO */}
+
+            <Link
+              to="/salvos"
+              style={{
+                background: "#16a34a",
+                color: "#fff",
+                textDecoration: "none",
+                padding: "14px 24px",
+                borderRadius: "10px",
+                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                boxShadow:
+                  "0 4px 12px rgba(0,0,0,.2)",
+              }}
+            >
+              ❤️
+              Personas a salvo
+            </Link>
+
+            {/* APP ANDROID */}
+
             <a
               href="https://www.appcreator24.com/app4111620-h57lx9"
               target="_blank"
@@ -264,12 +302,10 @@ const MenuPrincipal = () => {
               }}
             >
               <Download size={20} />
-
               📲 App Android
             </a>
 
           </div>
-
 
           <p
             style={{
@@ -279,29 +315,26 @@ const MenuPrincipal = () => {
               fontWeight: "500",
             }}
           >
-            Registro gratuito. La información puede ayudar a
-            identificar dónde existen necesidades.
+            Registro gratuito. La información puede ayudar
+            a identificar dónde existen necesidades.
           </p>
 
         </div>
 
       </section>
 
-
-      {/* OPCIONES */}
+      {/* =====================================================
+          OPCIONES DE AYUDA
+      ===================================================== */}
 
       <section className="categorias-section">
 
         <div className="container">
 
           <h2 className="section-title">
-
             <HeartHandshake size={24} />
-
             ¿Qué necesitas reportar?
-
           </h2>
-
 
           <div className="categorias-grid">
 
@@ -309,22 +342,15 @@ const MenuPrincipal = () => {
               (opcion, index) => (
 
                 <Link
-  key={index}
-  to={
-    opcion.titulo === "Estoy a salvo"
-      ? "/salvos"
-      : "/registro"
-  }
-  className="categoria-card"
-  style={{
-    textDecoration: "none",
-  }}
->
+                  key={index}
+                  to={opcion.ruta}
                   className="categoria-card"
                   style={{
                     textDecoration: "none",
                   }}
                 >
+
+                  {/* ICONO */}
 
                   <div
                     className="categoria-icon"
@@ -335,9 +361,13 @@ const MenuPrincipal = () => {
                     {opcion.icono}
                   </div>
 
+                  {/* TITULO */}
+
                   <h3>
                     {opcion.titulo}
                   </h3>
+
+                  {/* DESCRIPCIÓN */}
 
                   <p
                     style={{
@@ -349,6 +379,8 @@ const MenuPrincipal = () => {
                   >
                     {opcion.descripcion}
                   </p>
+
+                  {/* FLECHA */}
 
                   <div
                     className="categoria-arrow"
@@ -370,8 +402,9 @@ const MenuPrincipal = () => {
 
       </section>
 
-
-      {/* INFORMACION */}
+      {/* =====================================================
+          INFORMACIÓN
+      ===================================================== */}
 
       <section
         style={{
@@ -397,13 +430,16 @@ const MenuPrincipal = () => {
             }}
           >
 
+            {/* INFORMACIÓN LOCALIZADA */}
+
             <div
               style={{
                 background: "#fff",
                 padding: "20px",
                 borderRadius: "12px",
                 textAlign: "center",
-                border: "1px solid #e2e8f0",
+                border:
+                  "1px solid #e2e8f0",
               }}
             >
 
@@ -424,6 +460,7 @@ const MenuPrincipal = () => {
 
             </div>
 
+            {/* REPORTES */}
 
             <div
               style={{
@@ -431,7 +468,8 @@ const MenuPrincipal = () => {
                 padding: "20px",
                 borderRadius: "12px",
                 textAlign: "center",
-                border: "1px solid #e2e8f0",
+                border:
+                  "1px solid #e2e8f0",
               }}
             >
 
@@ -452,6 +490,7 @@ const MenuPrincipal = () => {
 
             </div>
 
+            {/* COMUNIDAD */}
 
             <div
               style={{
@@ -459,14 +498,15 @@ const MenuPrincipal = () => {
                 padding: "20px",
                 borderRadius: "12px",
                 textAlign: "center",
-                border: "1px solid #e2e8f0",
+                border:
+                  "1px solid #e2e8f0",
               }}
             >
 
               <HeartHandshake
-  size={32}
-  color="#16a34a"
-/>
+                size={32}
+                color="#16a34a"
+              />
 
               <h3>
                 La comunidad ayuda
@@ -486,8 +526,9 @@ const MenuPrincipal = () => {
 
       </section>
 
-
-      {/* DIRECTORIO */}
+      {/* =====================================================
+          COLOMBIA SOMOS TODOS
+      ===================================================== */}
 
       <section
         style={{
@@ -509,7 +550,7 @@ const MenuPrincipal = () => {
           </h3>
 
           <p>
-            Directorio para reportar su situacion
+            Directorio para reportar su situación
           </p>
 
           <Link
@@ -521,21 +562,22 @@ const MenuPrincipal = () => {
             }}
           >
             <Search size={18} />
-
             Ver directorio
-
           </Link>
 
         </div>
 
       </section>
 
-
-      {/* FOOTER */}
+      {/* =====================================================
+          FOOTER
+      ===================================================== */}
 
       <footer className="footer">
 
         <div className="footer-content">
+
+          {/* COLUMNA 1 */}
 
           <div className="footer-section">
 
@@ -558,6 +600,7 @@ const MenuPrincipal = () => {
 
           </div>
 
+          {/* COLUMNA 2 */}
 
           <div className="footer-section">
 
@@ -574,8 +617,14 @@ const MenuPrincipal = () => {
               </li>
 
               <li>
-                <Link to="/registro">
-                  Reportar persona no localizada
+                <Link to="/desaparecidos">
+                  Personas no localizadas
+                </Link>
+              </li>
+
+              <li>
+                <Link to="/salvos">
+                  Personas a salvo
                 </Link>
               </li>
 
@@ -583,6 +632,7 @@ const MenuPrincipal = () => {
 
           </div>
 
+          {/* COLUMNA 3 */}
 
           <div className="footer-section">
 
@@ -609,7 +659,6 @@ const MenuPrincipal = () => {
           </div>
 
         </div>
-
 
         <div className="footer-bottom">
 
